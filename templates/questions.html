@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block body %}
+{% for line in questions %}
+    <p>
+        <a href="{{ url_for('question') }}">{{ line[5] }}</a>
+
+    </p>
+
+{% endfor %}
+
+        <pre>
+    asdfdsfdsf
+    adfdfdasf
+    </pre>
+
+    <button type="button">hej</button>
+
+    <p>
+        {{ counter }}
+    </p>
+
+{% endblock %}
