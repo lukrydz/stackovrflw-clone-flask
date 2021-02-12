@@ -20,7 +20,7 @@ def open_data_file(file):
 
 def open_counter_file():
     with open('data/counter.csv', "r") as file:
-        return str(file.read())
+        return int(file.read())
 
 
 def create_headers():
@@ -32,13 +32,9 @@ def get_questions():
     questions = open(QUESTIONS_FILE_PATH, "r")
 
     questions_list = []
-    for row in reader(questions):
-        questions_list.append(row)
+    for line in reader(questions):
+        questions_list.append(line)
     return questions_list
-
-
-for row in get_questions():
-    print(row)
 
 
 def create_counter():

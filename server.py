@@ -1,21 +1,27 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request
 import connection as c
 
 app = Flask(__name__)
 
 
-@app.route("/")
 @app.route('/index')
 def index():
     return render_template('index.html')
 
 
-@app.route('/questions')
-def handle_questions():
+@app.route("/", methods=['GET', 'POST'])
+@app.route('/questions', methods=['GET', 'POST'])
+def vote_on_answer():
     questions = c.get_questions()
     counter = c.open_counter_file()
-
-    c.save_counter(counter)
+    if request.method == 'POST':
+        form = request.form
+        vote = form['vote']
+        if vote == "vote_up":
+            counter += 1
+        elif vote == "vote_down":
+            counter -= 1
+    c.save_counter(int(counter))
     return render_template('questions.html', questions=questions, counter=counter)
 
 

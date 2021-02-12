@@ -12,3 +12,8 @@ p {
 pre {
     color: coral;
 }
+
+a {
+    color: coral;
+    text-decoration: None;
+}
