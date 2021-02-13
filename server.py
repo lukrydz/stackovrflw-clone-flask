@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, redirect, request
 import connection as c
 import answer
+import logging
 
 app = Flask(__name__)
 
@@ -33,23 +34,19 @@ def question():
     return render_template('question.html')
 
 
-@app.route('/question/<question_id>/new-answer', methods=['POST'])
-def add_question():
+@app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
+def add_question(question_id = None):
 
-    question_data = answer.get_question_data(question_id)
-
-
-
-
-
-    #     pass
-
-    #first get questions
-    #from questions get the one
-    #pass it as argument
+    try:
+        question_data = answer.get_question_data(question_id)
+        if not isinstance(question_data, dict):
+            raise TypeError
+        logging.info('Question data imported')
+    except TypeError:
+        logging.warning('Error importing question data')
 
 
-    return render_template('add_answer.html', question=selected_question)
+    return render_template('add_answer.html', question_data=question_data)
 
 
 
