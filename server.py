@@ -37,6 +37,15 @@ def question():
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_question(question_id = None):
 
+    if request.method == 'POST':
+
+        message = request.form['message']
+
+        image = ''
+
+        answer.post_answer(question_id, message, image)
+
+
     try:
         question_data = answer.get_question_data(question_id)
         if not isinstance(question_data, dict):
@@ -51,4 +60,4 @@ def add_question(question_id = None):
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

@@ -1,9 +1,8 @@
 import csv
-import os
-
 
 QUESTION_FILE = 'sample_data/question.csv'
-DATA_HEADER = ['id','submission_time','view_number','vote_number','title','message','image']
+DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWERS_FILE = 'data/answer.csv'
 
 
 def get_all_questions():
@@ -22,10 +21,11 @@ def get_headers():
     return headers
 
 
-def get_next_id():
-    questions = get_all_questions()
-    current_max = 0
-    for question in questions:
-        if int(question["id"]) >= current_max:
-            current_max = int(question['id'])
-    return current_max + 1
+def write_answer(data):
+    with open(ANSWERS_FILE, 'r') as file:
+        f_data = file.readlines()
+
+    f_data.append(','.join(data) + '\n')
+
+    with open(ANSWERS_FILE, 'w') as file:
+        file.writelines(f_data)
