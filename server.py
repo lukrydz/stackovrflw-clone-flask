@@ -29,8 +29,11 @@ def vote_on_answer():
     return render_template('questions.html', questions=questions, counter=counter)
 
 
-@app.route('/question')
-def question():
+@app.route('/question/<question_id>')
+def question(question_id):
+    if question_id == '':
+        return redirect('questions')
+
     return render_template('question.html')
 
 
@@ -44,6 +47,8 @@ def add_answer(question_id):
         image = ''
 
         answer.post_answer(question_id, message, image)
+
+        return redirect(url_for('question', question_id=question_id))
 
     try:
         question_data = answer.get_question_data(question_id)
