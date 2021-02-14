@@ -35,7 +35,7 @@ def question():
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
-def add_answer(question_id = None):
+def add_answer(question_id):
 
     if request.method == 'POST':
 
