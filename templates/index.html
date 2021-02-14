@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
-<img src="{{ url_for("static", filename="sample.jpg") }}" height="250" width="250" alt="Granny">
+<a href="{{ url_for('vote_on_answer') }}">list of questions</a><br>
+<a href="/question/1/new-answer">add answer</a><br>
+
+    <img src="{{ url_for("static", filename="sample.jpg") }}" height="250" width="250" alt="Granny"><br>
 {% endblock %}

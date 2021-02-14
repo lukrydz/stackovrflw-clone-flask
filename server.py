@@ -5,6 +5,7 @@ import logging
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=['GET', 'POST'])
 @app.route('/index')
 def index():
@@ -15,8 +16,6 @@ def index():
 def vote_on_answer():
     questions = c.get_questions()
 
-    print(questions)
-
     counter = c.open_counter_file()
     if request.method == 'POST':
         form = request.form
@@ -26,6 +25,7 @@ def vote_on_answer():
         elif vote == "vote_down":
             counter -= 1
     c.save_counter(int(counter))
+
     return render_template('questions.html', questions=questions, counter=counter)
 
 
@@ -45,7 +45,6 @@ def add_question(question_id = None):
 
         answer.post_answer(question_id, message, image)
 
-
     try:
         question_data = answer.get_question_data(question_id)
         if not isinstance(question_data, dict):
@@ -54,9 +53,7 @@ def add_question(question_id = None):
     except TypeError:
         logging.warning('Error importing question data')
 
-
-    return render_template('add_answer.html', question_data=question_data)
-
+    return render_template('add_answer.html', question_dictionary=question_data)
 
 
 if __name__ == "__main__":
