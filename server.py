@@ -1,10 +1,16 @@
 from flask import Flask, render_template, url_for, redirect, request
 import connection as c
+import os
 import answer
 import logging
+from werkzeug.utils import secure_filename
+import util
 
 app = Flask(__name__)
 
+UPLOAD_FOLDER = './static/'
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route('/index')
@@ -34,7 +40,10 @@ def question(question_id):
     if question_id == '':
         return redirect('questions')
 
-    return render_template('question.html')
+    question_data = answer.get_question_data(question_id)
+    answers = answer.get_answers(question_id)
+
+    return render_template('question.html', question_data=question_data, answers=answers)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -45,6 +54,17 @@ def add_answer(question_id):
         message = request.form['message']
 
         image = ''
+
+        if 'image' in request.files:
+            print('FOUND FILE')
+
+            file = request.files['image']
+            if file and util.allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(path)
+
+                image = path
 
         answer.post_answer(question_id, message, image)
 

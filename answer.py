@@ -34,3 +34,23 @@ def post_answer(question_id, message, image=''):
     image = image
 
     data_handler.write_answer([answer_id, submission_time, vote_number, question_id, message, image])
+
+def get_answers(question_id):
+
+    all_answers = data_handler.get_all_answers()
+
+    HEADERS = all_answers[0].strip().split(',')
+
+    QUESTION_ID_INDEX = HEADERS.index('question_id')
+
+    answers_by_id = list()
+    for answer in all_answers[1:]:
+        answer = answer.split(',')
+
+        if answer[QUESTION_ID_INDEX] == question_id:
+            answer_to_append = dict()
+            for header in HEADERS:
+                answer_to_append[header] = answer[HEADERS.index(header)]
+            answers_by_id.append(answer_to_append)
+
+    return answers_by_id
