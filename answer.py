@@ -1,4 +1,6 @@
 import connection as c
+import util
+import data_handler
 
 
 def get_question_data(question_id):
@@ -20,3 +22,15 @@ def get_question_data(question_id):
                 question_dict[header] = ''
 
     return question_dict
+
+
+def post_answer(question_id, message, image=''):
+
+    answer_id = str(util.generate_uuid())
+    submission_time = str(util.get_timestamp())
+    vote_number = '0'
+    question_id = str(question_id)
+    message = f'"{message}"'
+    image = image
+
+    data_handler.write_answer([answer_id, submission_time, vote_number, question_id, message, image])
