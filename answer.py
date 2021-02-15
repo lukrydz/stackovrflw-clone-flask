@@ -54,3 +54,34 @@ def get_answers(question_id):
             answers_by_id.append(answer_to_append)
 
     return answers_by_id
+
+def update_answer(answer_id, header, new_value):
+
+    answers = data_handler.get_all_answers()
+
+    HEADERS = all_answers[0].strip().split(',')
+
+    for answer in answers[1:]:
+        answer = answer.split(',')
+
+        if answer[HEADERS.index('id')] == answer_id:
+            answer[HEADERS.index(header)] = new_value
+            data_handler.delete_answer(answer_id)
+            data_handler.write_answer(answer)
+
+def vote_answer(answer_id, plus_or_minus):
+
+    answers = data_handler.get_all_answers()
+
+    HEADERS = answers[0].strip().split(',')
+
+    for answer in answers[1:]:
+        answer = answer.split(',')
+
+        if answer[HEADERS.index('id')] == answer_id:
+            if plus_or_minus == '+':
+                answer[HEADERS.index('vote_number')] = str(int(answer[HEADERS.index('vote_number')]) + 1)
+            else:
+                answer[HEADERS.index('vote_number')] = str(int(answer[HEADERS.index('vote_number')]) - 1)
+            data_handler.delete_answer(answer_id)
+            data_handler.write_answer(answer)
