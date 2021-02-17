@@ -55,6 +55,21 @@ def get_answers(question_id):
 
     return answers_by_id
 
+def get_answer_data(answer_id):
+    all_answers = data_handler.get_all_answers()
+
+    HEADERS = all_answers[0].strip().split(',')
+
+    answer_data = dict()
+
+    for answer in all_answers:
+        answer = answer.split(',')
+        if answer[HEADERS.index('id')] == answer_id:
+            for counter in range(len(HEADERS)):
+                answer_data[HEADERS[counter]] = answer[counter]
+
+    return answer_data
+
 def update_answer(answer_id, header, new_value):
 
     answers = data_handler.get_all_answers()
@@ -85,3 +100,7 @@ def vote_answer(answer_id, plus_or_minus):
                 answer[HEADERS.index('vote_number')] = str(int(answer[HEADERS.index('vote_number')]) - 1)
             data_handler.delete_answer(answer_id)
             data_handler.write_answer(answer)
+
+def delete_answer(answer_id):
+
+    data_handler.delete_answer(answer_id)

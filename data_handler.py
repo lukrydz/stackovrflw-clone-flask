@@ -45,7 +45,8 @@ def write_answer(data):
 def delete_answer(id):
     answers = get_all_answers()
     for answer in answers:
-        if id in answer[0]:
+        chunk = answer.split(',')
+        if id == chunk[0]:
             answers.remove(answer)
 
     answers_with_newlines = list()
