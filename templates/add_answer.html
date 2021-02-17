@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
     {% block body %}
-        {% for question in question_dictionary %}
-        <p>{{ question, question_dictionary[question] }}</p>
+        {% for key in question_dictionary %}
+        <p>{{ key }}: {{ question_dictionary[key] }}</p>
         {% endfor %}
 
         <form method="POST">
@@ -9,7 +9,9 @@
             <input type="submit" name="vote" value="vote_down">
         </form>
 
-        <form action="{{ url_for('add_answer', question_id=question_dictionary['id']) }}" method="post" enctype="multipart/form-data">
+        <br><br>
+
+        <form action="{{ url_for('add_answer', question_id=question_dictionary['id']) }}" method="post" enctype="multipart/form-data" id="add_answer_form">
         <label for="message">Add answer:
         <input type="text" name="message" /></label>
         <input type="file" name="image">

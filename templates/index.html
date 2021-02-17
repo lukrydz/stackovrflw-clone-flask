@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
-<a href="{{ url_for('vote_on_answer') }}">list of questions</a><br>
-<a href="/question/1/new-answer">add answer</a><br>
 
-    <img src="{{ url_for("static", filename="sample.jpg") }}" height="250" width="250" alt="Granny"><br>
+
+    <img src="{{ url_for("static", filename="sample.jpg") }}" alt="Granny" id="homepage_picture"><br>
+    <div class="home_page_links">
+    <a href="{{ url_for('vote_on_answer') }}">list of questions</a>
+        <br><br>
+    <a href="/question/1/new-answer">add answer</a><br>
+    </div>
+
 {% endblock %}

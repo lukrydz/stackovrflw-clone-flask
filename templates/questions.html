@@ -2,12 +2,12 @@
 {% block body %}
 
 
-
+    <div>
     {% for question in questions %}
     <p>{{ question }}</p>
-        <a href="/question/{{ question[0] }}/new-answer"> {{ question[4] }}</a>
+        <a href="/question/{{ question[0] }}/new-answer" class="questions"> {{ question[4] }}</a>
     {% endfor %}
-
+    </div>
 
 
     <form method="POST">
