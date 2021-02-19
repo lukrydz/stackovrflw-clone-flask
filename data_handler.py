@@ -43,13 +43,14 @@ def write_answer(data):
 def delete_answer(id):
     answers = get_all_answers()
     for answer in answers:
-        chunk = answer.split(',')
-        if id == chunk[0]:
+        if id == answer[0]:
             answers.remove(answer)
 
     answers_with_newlines = list()
+    print(answers)
     for answer in answers:
-        answers_with_newlines.append(answer + '\n')
+
+        answers_with_newlines.append(','.join(answer) + '\n')
 
     with open(ANSWERS_FILE, 'w') as file:
         file.writelines(answers_with_newlines)
