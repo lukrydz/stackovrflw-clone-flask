@@ -72,11 +72,11 @@ def get_answer_data(answer_id):
 
 
 def update_answer(answer_id, header, new_value):
-    answers = data_handler.get_all_answers()
+    all_answers = data_handler.get_all_answers()
 
     HEADERS = all_answers[0].strip().split(',')
 
-    for answer in answers[1:]:
+    for answer in all_answers[1:]:
         answer = answer.split(',')
 
         if answer[HEADERS.index('id')] == answer_id:

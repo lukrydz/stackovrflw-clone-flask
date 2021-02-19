@@ -2,16 +2,18 @@
 {% block body %}
     <br><br><br><br>
     <p id="question_title">{{ question_data['title'] }}</p>
-    <p id="question_message">
-    {{ question_data['message'] }}
+    <p id="question_message"> {{ question_data['message'] }}
         <br>
 
+
         {% block vote %}
+
 
             {{ question_data['vote_number'] }}
             {{ super() }}
 
     {% endblock %}
+
     </p>
 
 <br><br><br><br>
@@ -29,6 +31,7 @@
             <input type="submit" name="vote" value="vote_up">
             <input type="submit" name="vote" value="vote_down">
         </form>
+        <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">delete_me</a>
     {% endfor %}
 
     <br><br><br><br>
