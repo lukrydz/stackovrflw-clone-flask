@@ -105,5 +105,16 @@ def delete_answer(answer_id):
     return redirect(url_for('question', question_id=referrer_question))
 
 
+@app.route('/answer/<answer_id><vote_>/vote')
+def vote(answer_id, vote_):
+    referrer_question = answer.get_answer_data(answer_id)['question_id']
+
+    answer.vote_answer(answer_id, vote_)
+    return redirect(url_for('question', question_id=referrer_question))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+

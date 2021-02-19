@@ -27,10 +27,9 @@
 
     {{ answer['vote_number'] }}
     </p>
-         <form method="POST">
-            <input type="submit" name="vote" value="vote_up">
-            <input type="submit" name="vote" value="vote_down">
-        </form>
+        <a href="{{ url_for('vote', answer_id=answer['id'], vote_='+') }}">vote up</a>
+        <a href="{{ url_for('vote', answer_id=answer['id'], vote_='u') }}">vote down</a>
+        <br>
         <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">delete_me</a>
     {% endfor %}
 

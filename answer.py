@@ -8,7 +8,6 @@ def get_question_data(question_id):
     question_dict = dict()
     headers = questions[0]
 
-    print(headers)
     this_question = None
     for iterator in range(1, len(questions)):
         if question_id == questions[iterator][0]:
@@ -51,7 +50,7 @@ def get_answers(question_id):
             for header in HEADERS:
                 answer_to_append[header] = answer[HEADERS.index(header)]
             answers_by_id.append(answer_to_append)
-
+            print(answers_by_id)
     return answers_by_id
 
 
