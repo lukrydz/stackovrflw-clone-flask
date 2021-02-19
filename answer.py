@@ -37,13 +37,12 @@ def post_answer(question_id, message, image=''):
 def get_answers(question_id):
     all_answers = data_handler.get_all_answers()
 
-    HEADERS = all_answers[0].strip().split(',')
+    HEADERS = all_answers[0]
 
     QUESTION_ID_INDEX = HEADERS.index('question_id')
 
     answers_by_id = list()
     for answer in all_answers[1:]:
-        answer = answer.split(',')
 
         if answer[QUESTION_ID_INDEX] == question_id:
             answer_to_append = dict()
@@ -57,12 +56,11 @@ def get_answers(question_id):
 def get_answer_data(answer_id):
     all_answers = data_handler.get_all_answers()
 
-    HEADERS = all_answers[0].strip().split(',')
+    HEADERS = all_answers[0]
 
     answer_data = dict()
 
     for answer in all_answers:
-        answer = answer.split(',')
         if answer[HEADERS.index('id')] == answer_id:
             for counter in range(len(HEADERS)):
                 answer_data[HEADERS[counter]] = answer[counter]
@@ -73,10 +71,9 @@ def get_answer_data(answer_id):
 def update_answer(answer_id, header, new_value):
     all_answers = data_handler.get_all_answers()
 
-    HEADERS = all_answers[0].strip().split(',')
+    HEADERS = all_answers[0]
 
     for answer in all_answers[1:]:
-        answer = answer.split(',')
 
         if answer[HEADERS.index('id')] == answer_id:
             answer[HEADERS.index(header)] = new_value
@@ -87,10 +84,9 @@ def update_answer(answer_id, header, new_value):
 def vote_answer(answer_id, plus_or_minus):
     answers = data_handler.get_all_answers()
 
-    HEADERS = answers[0].strip().split(',')
+    HEADERS = answers[0]
 
     for answer in answers[1:]:
-        answer = answer.split(',')
 
         if answer[HEADERS.index('id')] == answer_id:
             if plus_or_minus == '+':

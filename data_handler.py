@@ -23,12 +23,9 @@ def get_headers():
 
 def get_all_answers():
     with open(ANSWERS_FILE, 'r') as file:
-        f_data = file.read().split('\n')
+        f_data = csv.reader(file, quotechar='"')
 
-    f_data_parsed = list()
-    for line in f_data:
-        if len(line) > 0:
-            f_data_parsed.append(line)
+        f_data_parsed = list(f_data)
 
     return f_data_parsed
 
