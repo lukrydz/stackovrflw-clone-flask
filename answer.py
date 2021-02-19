@@ -25,7 +25,6 @@ def get_question_data(question_id):
 
 
 def post_answer(question_id, message, image=''):
-
     answer_id = str(util.generate_uuid())
     submission_time = str(util.get_timestamp())
     vote_number = '0'
@@ -35,8 +34,8 @@ def post_answer(question_id, message, image=''):
 
     data_handler.write_answer([answer_id, submission_time, vote_number, question_id, message, image])
 
-def get_answers(question_id):
 
+def get_answers(question_id):
     all_answers = data_handler.get_all_answers()
 
     HEADERS = all_answers[0].strip().split(',')
@@ -55,6 +54,7 @@ def get_answers(question_id):
 
     return answers_by_id
 
+
 def get_answer_data(answer_id):
     all_answers = data_handler.get_all_answers()
 
@@ -70,8 +70,8 @@ def get_answer_data(answer_id):
 
     return answer_data
 
-def update_answer(answer_id, header, new_value):
 
+def update_answer(answer_id, header, new_value):
     answers = data_handler.get_all_answers()
 
     HEADERS = all_answers[0].strip().split(',')
@@ -84,8 +84,8 @@ def update_answer(answer_id, header, new_value):
             data_handler.delete_answer(answer_id)
             data_handler.write_answer(answer)
 
-def vote_answer(answer_id, plus_or_minus):
 
+def vote_answer(answer_id, plus_or_minus):
     answers = data_handler.get_all_answers()
 
     HEADERS = answers[0].strip().split(',')
@@ -101,6 +101,6 @@ def vote_answer(answer_id, plus_or_minus):
             data_handler.delete_answer(answer_id)
             data_handler.write_answer(answer)
 
-def delete_answer(answer_id):
 
+def delete_answer(answer_id):
     data_handler.delete_answer(answer_id)

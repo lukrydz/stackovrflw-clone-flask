@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 {% block body %}
-
-
     <div>
-    {% for question in questions %}
-    <p>{{ question }}</p>
-        <a href="/question/{{ question[0] }}/new-answer" class="questions"> {{ question[4] }}</a>
-    {% endfor %}
-    </div>
+    {% for question in questions_list[1:] %}
+        <a href="/question/{{ question[QUESTION_ID_INDEX] }}"
+           class="questions"> {{ question[QUESTION_TITLE_INDEX] }}</a>
 
-
-    <form method="POST">
-            <input type="submit" name="vote" value="vote_up"><br>
+        <form method="POST">
+            <input type="submit" name="vote" value="vote_up">
             <input type="submit" name="vote" value="vote_down">
         </form>
+        <br><br><br>
+    {% endfor %}
+    </div>
+    {% block vote %}
+    {{ super() }}
+    {% endblock %}
+
     <p>
         {{ counter }}
     </p>

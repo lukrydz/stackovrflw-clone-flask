@@ -6,11 +6,20 @@ import logging
 from werkzeug.utils import secure_filename
 import util
 
+QUESTION_ID_INDEX = 0
+QUESTION_TIME_INDEX = 1
+QUESTION_VIEW_INDEX = 2
+QUESTION_VOTE_INDEX = 3
+QUESTION_TITLE_INDEX = 4
+QUESTION_MESSAGE_INDEX = 5
+QUESTION_IMAGE_INDEX = 6
+
 app = Flask(__name__)
 
 UPLOAD_FOLDER = './static/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route('/index')
@@ -19,20 +28,23 @@ def index():
 
 
 @app.route('/questions', methods=['GET', 'POST'])
-def vote_on_answer():
-    questions = c.get_questions()
+def questions():
+    questions_list = c.get_questions()
 
     counter = c.open_counter_file()
     if request.method == 'POST':
-        form = request.form
-        vote = form['vote']
+        vote = request.form['vote']
         if vote == "vote_up":
             counter += 1
         elif vote == "vote_down":
             counter -= 1
     c.save_counter(int(counter))
 
-    return render_template('questions.html', questions=questions, counter=counter)
+    return render_template('questions.html',
+                           questions_list=questions_list,
+                           counter=counter,
+                           QUESTION_ID_INDEX=QUESTION_ID_INDEX,
+                           QUESTION_TITLE_INDEX=QUESTION_TITLE_INDEX)
 
 
 @app.route('/question/<question_id>')
@@ -43,12 +55,13 @@ def question(question_id):
     question_data = answer.get_question_data(question_id)
     answers = answer.get_answers(question_id)
 
-    return render_template('question.html', question_data=question_data, answers=answers)
+    return render_template('question.html',
+                           question_data=question_data,
+                           answers=answers)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
-
     if request.method == 'POST':
 
         message = request.form['message']
@@ -80,9 +93,9 @@ def add_answer(question_id):
 
     return render_template('add_answer.html', question_dictionary=question_data)
 
+
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
-
     referrer_question = answer.get_answer_data(answer_id)['question_id']
 
     print(referrer_question)
@@ -90,6 +103,7 @@ def delete_answer(answer_id):
     answer.delete_answer(answer_id)
 
     return redirect(url_for('question', question_id=referrer_question))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

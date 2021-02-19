@@ -7,9 +7,16 @@
 </head>
 <body>
 <h2><a href="{{ url_for('index') }}" id="homepage">home page</a></h2>
-    {% block body %}
-    {% endblock body %}
+{% block body %}
 
 
+{% block vote %}
+    <form method="POST">
+            <input type="submit" name="vote" value="vote_up">
+            <input type="submit" name="vote" value="vote_down">
+        </form>
+{% endblock %}
+
+{% endblock body %}
 </body>
 </html>
