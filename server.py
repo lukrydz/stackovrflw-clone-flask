@@ -110,16 +110,16 @@ def delete_answer(answer_id):
     return redirect(url_for('question', question_id=referrer_question))
 
 
-@app.route('/answer/<answer_id><vote_>/vote')
-def vote(answer_id, vote_):
+@app.route('/answer/<answer_id>/<vote_up_or_down>')
+def vote(answer_id, vote_up_or_down):
     referrer_question = data_handler.get_answer_by_id(answer_id)['question_id']
 
-    value = 1 if vote_ == '+' else -1
+    value = 1 if vote_up_or_down == 'vote_up' else -1
 
-    data_handler.vote_answer(answer_id=answer_id, plus_or_minus=value)
+    print(answer_id, value)
+
+    data_handler.vote_answer(answer_id=answer_id, value=value)
     return redirect(url_for('question', question_id=referrer_question))
-
-
 
 
 if __name__ == "__main__":

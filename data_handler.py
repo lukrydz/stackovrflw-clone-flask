@@ -65,9 +65,9 @@ def vote_answer(cursor, answer_id, value):
     query = """
             UPDATE answer
             SET vote_number = vote_number + %(vote)s
-            WHERE id = 1
+            WHERE id = %(answer_id)s
                        """
-    cursor.execute(query, {'vote': value})
+    cursor.execute(query, {'vote': value, 'answer_id': answer_id})
 
     return True
 

@@ -11,8 +11,7 @@ def post_answer(question_id, message, image=''):
     message = f'"{message}"'
     image = image
 
-    data_handler.write_answer([answer_id, submission_time, vote_number, question_id, message, image])
-
+    data_handler.write_answer(data=[answer_id, submission_time, vote_number, question_id, message, image])
 
 # def update_answer(answer_id, header, new_value):
 #     all_answers = data_handler.get_all_answers()
