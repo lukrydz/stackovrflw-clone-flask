@@ -1,6 +1,8 @@
 import connection
+import util
 
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+
 
 def get_headers():
     headers = []
@@ -8,12 +10,14 @@ def get_headers():
         headers.append(header.replace('_', ' ').capitalize())
     return headers
 
+
 @connection.connection_handler
 def get_all_questions(cursor):
     cursor.execute("""
                         SELECT * FROM question
                        """)
     return cursor.fetchall()
+
 
 @connection.connection_handler
 def get_question_by_id(cursor, id):
@@ -23,12 +27,14 @@ def get_question_by_id(cursor, id):
                        """, {'id': id})
     return cursor.fetchone()
 
+
 @connection.connection_handler
 def get_all_answers(cursor):
     cursor.execute("""
                         SELECT * FROM answer
                        """)
     return cursor.fetchall()
+
 
 @connection.connection_handler
 def get_answers_for_question(cursor, question_id):
@@ -38,6 +44,7 @@ def get_answers_for_question(cursor, question_id):
                        """, {'id': question_id})
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def get_answer_by_id(cursor, id):
     cursor.execute("""
@@ -46,22 +53,39 @@ def get_answer_by_id(cursor, id):
                        """, {'id': id})
     return cursor.fetchone()
 
+
+def post_answer(question_id, message, image=''):
+    submission_time = str(util.get_timestamp())
+    vote_number = '0'
+    question_id = str(question_id)
+    message = f'"{message}"'
+    image = image
+
+    data = {'submission_time': submission_time,
+     'vote_number': vote_number,
+     'question_id': question_id,
+     'message': message,
+     'image': image}
+
+    write_answer(data=data)
+
+
 @connection.connection_handler
-def write_answer(cursor, data: list) -> None:
-    #[answer_id, submission_time, vote_number, question_id, message, image]
+def write_answer(cursor, data: dict) -> None:
+    # [answer_id, submission_time, vote_number, question_id, message, image]
 
     query = """
-                INSERT INTO answer (id, submission_time, vote_number, question_id, message, image)
-                VALUES (%(answer_id)s, %(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
+                INSERT INTO answer (submission_time, vote_number, question_id, message, image)
+                VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
                            """
-    cursor.execute(query, {'answer_id': data[0], 'submission_time': data[1], 'vote_number': data[2], 'question_id': data[3], 'message': data[4], 'image': data[5]})
+
+    cursor.execute(query, data)
 
     return True
 
 
 @connection.connection_handler
 def vote_answer(cursor, answer_id, value):
-
     query = """
             UPDATE answer
             SET vote_number = vote_number + %(vote)s
@@ -72,11 +96,8 @@ def vote_answer(cursor, answer_id, value):
     return True
 
 
-
-
 @connection.connection_handler
 def delete_answer(cursor, id: int) -> None:
-
     query = """
             DELETE FROM answer
             WHERE id=%(id)s

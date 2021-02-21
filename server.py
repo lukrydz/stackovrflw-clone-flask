@@ -1,7 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request
 import os
 import data_handler
-import answer
 import logging
 from werkzeug.utils import secure_filename
 import util
@@ -83,7 +82,7 @@ def add_answer(question_id):
 
                 image = path
 
-        answer.post_answer(question_id, message, image)
+        data_handler.post_answer(question_id, message, image)
 
         return redirect(url_for('question', question_id=question_id))
 

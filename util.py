@@ -1,5 +1,5 @@
 import uuid
-import time
+import datetime
 
 from data_handler import get_all_questions
 
@@ -11,7 +11,7 @@ def generate_uuid():
 
 
 def get_timestamp():
-    return int(time.time())
+    return datetime.datetime.now()
 
 
 def get_next_id():
