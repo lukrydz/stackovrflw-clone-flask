@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block body %}
     <div>
-        {% for question in questions_list[1:] %}
-            <a href="/question/{{ question[QUESTION_ID_INDEX] }}"
-               class="questions"> {{ question[QUESTION_TITLE_INDEX] }}</a>
+        {% for question in questions_list %}
+            <a href="/question/{{ question['id'] }}"
+               class="questions"> {{ question['title'] }}</a>
 
             <form method="POST">
                 <input type="submit" name="vote" value="vote_up">
