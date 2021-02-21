@@ -1,19 +1,6 @@
-import csv
+import connection
 
-QUESTION_FILE = 'data/question.csv'
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWERS_FILE = 'data/answer.csv'
-
-
-def get_all_questions():
-    user_stories = []
-    with open(QUESTION_FILE) as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
-        for row in csv_reader:
-            user_stories.append(row)
-        print(user_stories)
-        return user_stories
-
 
 def get_headers():
     headers = []
@@ -21,35 +8,80 @@ def get_headers():
         headers.append(header.replace('_', ' ').capitalize())
     return headers
 
+@connection.connection_handler
+def get_all_questions(cursor):
+    cursor.execute("""
+                        SELECT * FROM question
+                       """)
+    return cursor.fetchall()
 
-def get_all_answers():
-    with open(ANSWERS_FILE, 'r') as file:
-        f_data = csv.reader(file, quotechar='"')
+@connection.connection_handler
+def get_question_by_id(cursor, id):
+    cursor.execute("""
+                        SELECT * FROM question
+                        WHERE id=%(id)s
+                       """, {'id': id})
+    return cursor.fetchone()
 
-        f_data_parsed = list(f_data)
+@connection.connection_handler
+def get_all_answers(cursor):
+    cursor.execute("""
+                        SELECT * FROM answer
+                       """)
+    return cursor.fetchall()
 
-    return f_data_parsed
+@connection.connection_handler
+def get_answers_for_question(cursor, question_id):
+    cursor.execute("""
+                        SELECT * FROM answer
+                        WHERE question_id=%(id)s
+                       """, {'id': question_id})
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_answer_by_id(cursor, id):
+    cursor.execute("""
+                        SELECT * FROM answer
+                        WHERE id=%(id)s
+                       """, {'id': id})
+    return cursor.fetchone()
+
+@connection.connection_handler
+def write_answer(cursor, data: list) -> None:
+    #[answer_id, submission_time, vote_number, question_id, message, image]
+
+    query = """
+                INSERT INTO answer (id, submission_time, vote_number, question_id, message, image)
+                VALUES (%(answer_id)s, %(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
+                           """
+    cursor.execute(query, {'answer_id': data[0], 'submission_time': data[1], 'vote_number': data[2], 'question_id': data[3], 'message': data[4], 'image': data[5]})
+
+    return True
 
 
-def write_answer(data):
-    with open(ANSWERS_FILE, 'r') as file:
-        f_data = file.readlines()
+@connection.connection_handler
+def vote_answer(cursor, answer_id, value):
 
-    f_data.append(','.join(data) + '\n')
+    query = """
+            UPDATE answer
+            SET vote_number = vote_number + %(vote)s
+            WHERE id = 1
+                       """
+    cursor.execute(query, {'vote': value})
 
-    with open(ANSWERS_FILE, 'w') as file:
-        file.writelines(f_data)
+    return True
 
 
-def delete_answer(id):
-    answers = get_all_answers()
-    for answer in answers:
-        if id == answer[0]:
-            answers.remove(answer)
 
-    answers_with_newlines = list()
-    for answer in answers:
-        answers_with_newlines.append(','.join(answer) + '\n')
 
-    with open(ANSWERS_FILE, 'w') as file:
-        file.writelines(answers_with_newlines)
+@connection.connection_handler
+def delete_answer(cursor, id: int) -> None:
+
+    query = """
+            DELETE FROM answer
+            WHERE id=%(id)s
+                       """
+
+    cursor.execute(query, {'id': id})
+
+    return True

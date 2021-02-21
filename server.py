@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request
-import connection as c
 import os
+import data_handler
 import answer
 import logging
 from werkzeug.utils import secure_filename
@@ -29,20 +29,24 @@ def index():
 
 @app.route('/questions', methods=['GET', 'POST'])
 def questions():
-    questions_list = c.get_questions()
+    questions_list = data_handler.get_all_questions()
 
-    counter = c.open_counter_file()
+    # counter = c.open_counter_file()
     if request.method == 'POST':
         vote = request.form['vote']
         if vote == "vote_up":
             counter += 1
         elif vote == "vote_down":
             counter -= 1
-    c.save_counter(int(counter))
+    # c.save_counter(int(counter))
+
+    print(questions_list)
+
+    # questions are passed, need to update display format
 
     return render_template('questions.html',
                            questions_list=questions_list,
-                           counter=counter,
+                           counter=0,
                            QUESTION_ID_INDEX=QUESTION_ID_INDEX,
                            QUESTION_TITLE_INDEX=QUESTION_TITLE_INDEX)
 
@@ -52,8 +56,8 @@ def question(question_id):
     if question_id == '':
         return redirect('questions')
 
-    question_data = answer.get_question_data(question_id)
-    answers = answer.get_answers(question_id)
+    question_data = data_handler.get_question_by_id(id=question_id)
+    answers = data_handler.get_answers_for_question(question_id=question_id)
 
     return render_template('question.html',
                            question_data=question_data,
@@ -84,7 +88,7 @@ def add_answer(question_id):
         return redirect(url_for('question', question_id=question_id))
 
     try:
-        question_data = answer.get_question_data(question_id)
+        question_data = data_handler.get_question_by_id(id=question_id)
         if not isinstance(question_data, dict):
             raise TypeError
         logging.info('Question data imported')
@@ -96,20 +100,23 @@ def add_answer(question_id):
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
-    referrer_question = answer.get_answer_data(answer_id)['question_id']
+
+    referrer_question = data_handler.get_answer_by_id(answer_id)['question_id']
 
     print(referrer_question)
 
-    answer.delete_answer(answer_id)
+    # data_handler.delete_answer(answer_id)
 
     return redirect(url_for('question', question_id=referrer_question))
 
 
 @app.route('/answer/<answer_id><vote_>/vote')
 def vote(answer_id, vote_):
-    referrer_question = answer.get_answer_data(answer_id)['question_id']
+    referrer_question = data_handler.get_answer_by_id(answer_id)['question_id']
 
-    answer.vote_answer(answer_id, vote_)
+    value = 1 if vote_ == '+' else -1
+
+    data_handler.vote_answer(answer_id=answer_id, plus_or_minus=value)
     return redirect(url_for('question', question_id=referrer_question))
 
 

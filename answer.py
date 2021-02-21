@@ -2,27 +2,7 @@ import connection as c
 import util
 import data_handler
 
-
-def get_question_data(question_id):
-    questions = c.get_questions()
-    question_dict = dict()
-    headers = questions[0]
-
-    this_question = None
-    for iterator in range(1, len(questions)):
-        if question_id == questions[iterator][0]:
-            this_question = questions[iterator]
-
-    if this_question:
-        for counter, header in enumerate(headers):
-            try:
-                question_dict[header] = this_question[counter]
-            except IndexError:
-                question_dict[header] = ''
-
-    return question_dict
-
-
+# TODO make it an SQL
 def post_answer(question_id, message, image=''):
     answer_id = str(util.generate_uuid())
     submission_time = str(util.get_timestamp())
@@ -34,68 +14,14 @@ def post_answer(question_id, message, image=''):
     data_handler.write_answer([answer_id, submission_time, vote_number, question_id, message, image])
 
 
-def get_answers(question_id):
-    all_answers = data_handler.get_all_answers()
-
-    HEADERS = all_answers[0]
-
-    QUESTION_ID_INDEX = HEADERS.index('question_id')
-
-    answers_by_id = list()
-    for answer in all_answers[1:]:
-
-        if answer[QUESTION_ID_INDEX] == question_id:
-            answer_to_append = dict()
-            for header in HEADERS:
-                answer_to_append[header] = answer[HEADERS.index(header)]
-            answers_by_id.append(answer_to_append)
-            print(answers_by_id)
-    return answers_by_id
-
-
-def get_answer_data(answer_id):
-    all_answers = data_handler.get_all_answers()
-
-    HEADERS = all_answers[0]
-
-    answer_data = dict()
-
-    for answer in all_answers:
-        if answer[HEADERS.index('id')] == answer_id:
-            for counter in range(len(HEADERS)):
-                answer_data[HEADERS[counter]] = answer[counter]
-
-    return answer_data
-
-
-def update_answer(answer_id, header, new_value):
-    all_answers = data_handler.get_all_answers()
-
-    HEADERS = all_answers[0]
-
-    for answer in all_answers[1:]:
-
-        if answer[HEADERS.index('id')] == answer_id:
-            answer[HEADERS.index(header)] = new_value
-            data_handler.delete_answer(answer_id)
-            data_handler.write_answer(answer)
-
-
-def vote_answer(answer_id, plus_or_minus):
-    answers = data_handler.get_all_answers()
-
-    HEADERS = answers[0]
-
-    for answer in answers[1:]:
-
-        if answer[HEADERS.index('id')] == answer_id:
-            if plus_or_minus == '+':
-                answer[HEADERS.index('vote_number')] = str(int(answer[HEADERS.index('vote_number')]) + 1)
-            else:
-                answer[HEADERS.index('vote_number')] = str(int(answer[HEADERS.index('vote_number')]) - 1)
-            data_handler.delete_answer(answer_id)
-            data_handler.write_answer(answer)
-
-
-def delete_answer(answer_id):
-    data_handler.delete_answer(answer_id)
+# def update_answer(answer_id, header, new_value):
+#     all_answers = data_handler.get_all_answers()
+#
+#     HEADERS = all_answers[0]
+#
+#     for answer in all_answers[1:]:
+#
+#         if answer[HEADERS.index('id')] == answer_id:
+#             answer[HEADERS.index(header)] = new_value
+#             data_handler.delete_answer(answer_id)
+#             data_handler.write_answer(answer)
