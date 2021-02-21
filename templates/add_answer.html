@@ -1,23 +1,24 @@
 {% extends 'base.html' %}
-    {% block body %}
-            <p>{{ question_dictionary['title'] }}</p>
-            <p>{{ question_dictionary['message'] }}</p>
-            <p>{{ question_dictionary['vote_number'] }}</p>
+{% block body %}
+    <p>{{ question_dictionary['title'] }}</p>
+    <p>{{ question_dictionary['message'] }}</p>
+    <p>{{ question_dictionary['vote_number'] }}</p>
 
-        <form method="POST">
-            <input type="submit" name="vote" value="vote_up"><br>
-            <input type="submit" name="vote" value="vote_down">
-        </form>
+    <form method="POST">
+        <input type="submit" name="vote" value="vote_up"><br>
+        <input type="submit" name="vote" value="vote_down">
+    </form>
 
-        <br><br>
+    <br><br>
 
-        <form action="{{ url_for('add_answer', question_id=question_dictionary['id']) }}" method="post" enctype="multipart/form-data" id="add_answer_form">
+    <form action="{{ url_for('add_answer', question_id=question_dictionary['id']) }}" method="post"
+          enctype="multipart/form-data" id="add_answer_form">
         <label for="message">Add answer:
-        <input type="text" name="message" /></label>
+            <input type="text" name="message"/></label>
         <input type="file" name="image">
         <input type="submit">
-        </form>
+    </form>
 
 
 
-    {% endblock %}
+{% endblock %}

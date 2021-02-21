@@ -115,6 +115,3 @@ def vote(answer_id, vote_):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-

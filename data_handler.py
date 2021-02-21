@@ -1,6 +1,6 @@
 import csv
 
-QUESTION_FILE = 'sample_data/question.csv'
+QUESTION_FILE = 'data/question.csv'
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 ANSWERS_FILE = 'data/answer.csv'
 
@@ -11,6 +11,7 @@ def get_all_questions():
         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
         for row in csv_reader:
             user_stories.append(row)
+        print(user_stories)
         return user_stories
 
 
@@ -47,9 +48,7 @@ def delete_answer(id):
             answers.remove(answer)
 
     answers_with_newlines = list()
-    print(answers)
     for answer in answers:
-
         answers_with_newlines.append(','.join(answer) + '\n')
 
     with open(ANSWERS_FILE, 'w') as file:

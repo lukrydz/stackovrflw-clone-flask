@@ -10,12 +10,13 @@
 {% block body %}
 
 
-{% block vote %}
-    <form method="POST">
+    {% block vote %}
+        <form method="POST">
             <input type="submit" name="vote" value="vote_up">
+            <br>
             <input type="submit" name="vote" value="vote_down">
         </form>
-{% endblock %}
+    {% endblock %}
 
 {% endblock body %}
 </body>
