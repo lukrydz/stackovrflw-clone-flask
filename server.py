@@ -97,6 +97,50 @@ def add_answer(question_id):
     return render_template('add_answer.html', question_dictionary=question_data)
 
 
+@app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
+def edit_answer(answer_id):
+    """
+    TODO: delete image when uploading new one.
+    """
+
+    answer_data = data_handler.get_answer_by_id(answer_id)
+    question_data = data_handler.get_question_by_id(id=answer_data['question_id'])
+
+    referrer_question = answer_data['question_id']
+
+    # IF THERE IS POST FORM MAKE UPDATE
+    if request.method == 'POST':
+
+        image = ''
+
+        if 'image' in request.files:
+            print('FOUND FILE')
+
+            file = request.files['image']
+            if file and util.allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(path)
+
+                image = path
+
+        print(request.form)
+
+        newmessage = request.form['message']
+
+        print(newmessage)
+
+        data_handler.answer_update(answer_id, newmessage, image)
+
+        return redirect(url_for('question', question_id=referrer_question))
+
+    # ELSE SHOW FORM WITH ANSWER DATA
+    return render_template('edit_answer.html', answer_data=answer_data, question_dictionary=question_data)
+
+
+
+
+
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):

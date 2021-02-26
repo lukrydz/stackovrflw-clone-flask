@@ -85,6 +85,23 @@ def write_answer(cursor, data: dict) -> None:
 
 
 @connection.connection_handler
+def answer_update(cursor, answer_id, newmessage, newimage):
+    if newimage != '':
+        query = """
+                UPDATE answer
+                SET message = %(newmessage)s, image=%(newimage)s
+                WHERE id = %(answer_id)s        
+        """
+    else:
+        query = """
+                UPDATE answer
+                SET message = %(newmessage)s
+                WHERE id = %(answer_id)s        
+        """
+    cursor.execute(query, {'answer_id': answer_id,'newmessage': newmessage, 'newimage': newimage})
+
+
+@connection.connection_handler
 def vote_answer(cursor, answer_id, value):
     query = """
             UPDATE answer
