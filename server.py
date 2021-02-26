@@ -97,14 +97,13 @@ def add_answer(question_id):
     return render_template('add_answer.html', question_dictionary=question_data)
 
 
+
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
 
     referrer_question = data_handler.get_answer_by_id(answer_id)['question_id']
 
-    print(referrer_question)
-
-    # data_handler.delete_answer(answer_id)
+    data_handler.delete_answer(answer_id)
 
     return redirect(url_for('question', question_id=referrer_question))
 
