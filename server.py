@@ -114,7 +114,6 @@ def edit_answer(answer_id):
         image = ''
 
         if 'image' in request.files:
-            print('FOUND FILE')
 
             file = request.files['image']
             if file and util.allowed_file(file.filename):
@@ -124,11 +123,7 @@ def edit_answer(answer_id):
 
                 image = path
 
-        print(request.form)
-
         newmessage = request.form['message']
-
-        print(newmessage)
 
         data_handler.answer_update(answer_id, newmessage, image)
 
