@@ -1,8 +1,6 @@
 import uuid
 import datetime
 
-from data_handler import get_all_questions
-
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
@@ -12,15 +10,6 @@ def generate_uuid():
 
 def get_timestamp():
     return datetime.datetime.now()
-
-
-def get_next_id():
-    questions = get_all_questions()
-    current_max = 0
-    for question in questions:
-        if int(question["id"]) >= current_max:
-            current_max = int(question['id'])
-    return current_max + 1
 
 
 def allowed_file(filename):
