@@ -21,8 +21,11 @@
             </td>
         </tr>
     </table>
-
-
+    <br><br>
+    <h3>Comments for question:</h3>
+    {% for comment in comments_for_question %}
+    {{ comment }}
+    {% endfor %}
 
     <br><br><br><br>
     <h3>Answers:</h3>

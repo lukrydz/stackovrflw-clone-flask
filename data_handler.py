@@ -62,10 +62,10 @@ def post_answer(question_id, message, image=''):
     image = image
 
     data = {'submission_time': submission_time,
-     'vote_number': vote_number,
-     'question_id': question_id,
-     'message': message,
-     'image': image}
+            'vote_number': vote_number,
+            'question_id': question_id,
+            'message': message,
+            'image': image}
 
     write_answer(data=data)
 
@@ -98,7 +98,7 @@ def answer_update(cursor, answer_id, newmessage, newimage):
                 SET message = %(newmessage)s
                 WHERE id = %(answer_id)s        
         """
-    cursor.execute(query, {'answer_id': answer_id,'newmessage': newmessage, 'newimage': newimage})
+    cursor.execute(query, {'answer_id': answer_id, 'newmessage': newmessage, 'newimage': newimage})
 
 
 @connection.connection_handler
@@ -121,5 +121,39 @@ def delete_answer(cursor, id: int) -> None:
                        """
 
     cursor.execute(query, {'id': id})
+
+    return True
+
+@connection.connection_handler
+def fetch_comments(cursor, id, mode):
+    if mode == 'question':
+        query = """
+            SELECT * FROM comment
+            WHERE question_id=%(id)s
+        """
+    else:
+        query = """
+                    SELECT * FROM comment
+                    WHERE answer_id=%(id)s
+                """
+
+    cursor.execute(query, {'id': id})
+    return cursor.fetchall()
+
+@connection.connection_handler
+def post_comment(cursor, message, id, mode):
+    submission_time = util.get_timestamp()
+    if mode == 'question':
+        query_for_question = """
+            INSERT INTO comment (question_id, message, submission_time)
+            VALUES (%(question_id)s, %(message)s, %(submission_time)s)          
+    """
+        cursor.execute(query_for_question, {'question_id': id, 'message': message, 'submission_time': submission_time})
+    else:
+        query_for_answer = """
+                INSERT INTO comment (answer_id, message, submission_time)
+                VALUES (%(answer_id)s, %(message)s, %(submission_time)s)          
+        """
+        cursor.execute(query_for_answer, {'answer_id': id, 'message': message, 'submission_time': submission_time})
 
     return True

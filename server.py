@@ -57,10 +57,11 @@ def question(question_id):
 
     question_data = data_handler.get_question_by_id(id=question_id)
     answers = data_handler.get_answers_for_question(question_id=question_id)
+    comments = data_handler.fetch_comments(id=question_id, mode='question')
 
     return render_template('question.html',
                            question_data=question_data,
-                           answers=answers)
+                           answers=answers, comments_for_question=comments)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -133,10 +134,6 @@ def edit_answer(answer_id):
     return render_template('edit_answer.html', answer_data=answer_data, question_dictionary=question_data)
 
 
-
-
-
-
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
 
@@ -157,6 +154,24 @@ def vote(answer_id, vote_up_or_down):
 
     data_handler.vote_answer(answer_id=answer_id, value=value)
     return redirect(url_for('question', question_id=referrer_question))
+
+
+@app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
+def comment_question(question_id):
+
+    question_data = data_handler.get_question_by_id(question_id)
+
+    if request.method == 'POST':
+
+        message = request.form['message']
+
+        data_handler.post_comment(message, question_id, 'question')
+
+        return redirect(url_for('question', question_id=question_id))
+
+    else:
+
+        return render_template('add_comment.html', question_data=question_data)
 
 
 if __name__ == "__main__":
