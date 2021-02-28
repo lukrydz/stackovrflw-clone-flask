@@ -25,7 +25,7 @@
     <h3>Comments for question:</h3>
     {% for comment in comments_for_question %}
     {{ comment }}
-        <a href="{{ url_for('delete_comment', comment_id=comment['id'])  }}">DELETE COMMENT</a>
+        <a href="{{ url_for('delete_comment', comment_id=comment['id'])  }}" onclick="return confirm('Are you sure?')">DELETE COMMENT</a>
         <br />
     {% endfor %}
 
@@ -57,7 +57,7 @@
                 <td rowspan="2"
                     style="text-align: right; vertical-align: bottom" class="short_cell">
                     <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">
-                        <button>delete</button>
+                        <button onclick="return confirm('Are you sure?')">delete</button>
                     </a>
                 </td>
             </tr>
@@ -69,7 +69,7 @@
         {% for comment in comment_for_answers[answer['id']] %}
 
             {{ comment }}
-            <a href="{{ url_for('delete_comment', comment_id=comment['id'])  }}">DELETE COMMENT</a>
+            <a href="{{ url_for('delete_comment', comment_id=comment['id'])  }}" onclick="return confirm('Are you sure?')">DELETE COMMENT</a>
             <br />
 
         {% endfor %}
