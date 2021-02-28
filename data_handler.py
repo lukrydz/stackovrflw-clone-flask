@@ -168,3 +168,25 @@ def delete_comment(cursor, comment_id):
     cursor.execute(query, {'id': comment_id})
 
     return True
+
+@connection.connection_handler
+def get_comment_by_id(cursor, comment_id):
+    query = """
+            SELECT * FROM comment
+            WHERE comment.id=%(comment_id)s
+    """
+    cursor.execute(query, {'comment_id': comment_id})
+
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def edit_comment(cursor, comment_id, message):
+    query = """
+            UPDATE comment
+            SET message=%(message)s, edited_count=COALESCE(edited_count, 0) + 1
+            WHERE id=%(comment_id)s
+    """
+    cursor.execute(query, {'message': message, 'comment_id': comment_id})
+
+    return True

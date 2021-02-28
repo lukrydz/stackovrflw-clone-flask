@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    <br><br>
+
+    <h3>Edit comment:</h3>
+
+    <form action="{{ url_for('edit_comment', comment_id=comment_data['id']) }}" method="post"
+          enctype="multipart/form-data" id="add_answer_form">
+        <label for="message">New value:
+            <input type="text" name="message" value="{{ comment_data['message'] }}"/></label>
+        <input type="submit">
+    </form>
+
+
+
+{% endblock %}

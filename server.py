@@ -192,6 +192,26 @@ def comment_answer(answer_id):
         return render_template('comment_answer.html', answer_data=answer_data)
 
 
+@app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
+def edit_comment(comment_id):
+
+    comment_data = data_handler.get_comment_by_id(comment_id)
+    if comment_data['question_id']:
+        referrer_question = comment_data['question_id']
+    else:
+        referrer_question = data_handler.get_answer_by_id(id=comment_data['answer_id'])['question_id']
+
+    if request.method == 'POST':
+
+        message = request.form['message']
+
+        data_handler.edit_comment(comment_id=comment_id, message=message)
+
+        return redirect(url_for('question', question_id=referrer_question))
+
+    return render_template('edit_comment.html', comment_data=comment_data)
+
+
 @app.route('/comments/<comment_id>/delete', methods=['GET'])
 def delete_comment(comment_id):
 
@@ -199,9 +219,6 @@ def delete_comment(comment_id):
 
     return redirect(request.referrer)
 
-    """
-There is a recycle bin icon next to the comment
-Clicking the icon asks the user to confirm the deletion"""
 
 if __name__ == "__main__":
     app.run(debug=True)
