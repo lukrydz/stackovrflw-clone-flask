@@ -59,9 +59,14 @@ def question(question_id):
     answers = data_handler.get_answers_for_question(question_id=question_id)
     comments = data_handler.fetch_comments(id=question_id, mode='question')
 
+    comment_for_answers = dict()
+
+    for answer in answers:
+        comment_for_answers[answer['id']] = data_handler.fetch_comments(id=answer['id'], mode='answer')
+
     return render_template('question.html',
                            question_data=question_data,
-                           answers=answers, comments_for_question=comments)
+                           answers=answers, comments_for_question=comments, comment_for_answers=comment_for_answers)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -87,13 +92,7 @@ def add_answer(question_id):
 
         return redirect(url_for('question', question_id=question_id))
 
-    try:
-        question_data = data_handler.get_question_by_id(id=question_id)
-        if not isinstance(question_data, dict):
-            raise TypeError
-        logging.info('Question data imported')
-    except TypeError:
-        logging.warning('Error importing question data')
+    question_data = data_handler.get_question_by_id(id=question_id)
 
     return render_template('add_answer.html', question_dictionary=question_data)
 
@@ -124,9 +123,9 @@ def edit_answer(answer_id):
 
                 image = path
 
-        newmessage = request.form['message']
+        new_message = request.form['message']
 
-        data_handler.answer_update(answer_id, newmessage, image)
+        data_handler.answer_update(answer_id, new_message, image)
 
         return redirect(url_for('question', question_id=referrer_question))
 
@@ -172,6 +171,25 @@ def comment_question(question_id):
     else:
 
         return render_template('add_comment.html', question_data=question_data)
+
+
+@app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
+def comment_answer(answer_id):
+
+    answer_data = data_handler.get_answer_by_id(answer_id)
+    referrer_question = answer_data['question_id']
+
+    if request.method == 'POST':
+
+        message = request.form['message']
+
+        data_handler.post_comment(message, answer_id, 'answer')
+
+        return redirect(url_for('question', question_id=referrer_question))
+
+    else:
+
+        return render_template('comment_answer.html', answer_data=answer_data)
 
 
 if __name__ == "__main__":

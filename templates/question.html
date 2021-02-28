@@ -64,6 +64,11 @@
                     {{ answer['message'] }}
                 </td>
             </tr>
+        {% for comment in comment_for_answers[answer['id']] %}
+
+            {{ comment }} <br />
+
+        {% endfor %}
         </table>
         <br><br><br><br>
     {% endfor %}

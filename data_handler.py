@@ -157,3 +157,4 @@ def post_comment(cursor, message, id, mode):
         cursor.execute(query_for_answer, {'answer_id': id, 'message': message, 'submission_time': submission_time})
 
     return True
+
