@@ -25,6 +25,8 @@
     <h3>Comments for question:</h3>
     {% for comment in comments_for_question %}
     {{ comment }}
+        <a href="{{ url_for('delete_comment', comment_id=comment['id'])  }}">DELETE COMMENT</a>
+        <br />
     {% endfor %}
 
     <br><br><br><br>
@@ -66,7 +68,9 @@
             </tr>
         {% for comment in comment_for_answers[answer['id']] %}
 
-            {{ comment }} <br />
+            {{ comment }}
+            <a href="{{ url_for('delete_comment', comment_id=comment['id'])  }}">DELETE COMMENT</a>
+            <br />
 
         {% endfor %}
         </table>

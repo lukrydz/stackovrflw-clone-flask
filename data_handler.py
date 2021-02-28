@@ -158,3 +158,13 @@ def post_comment(cursor, message, id, mode):
 
     return True
 
+
+@connection.connection_handler
+def delete_comment(cursor, comment_id):
+    query = """
+            DELETE FROM comment
+            WHERE id=%(id)s   
+    """
+    cursor.execute(query, {'id': comment_id})
+
+    return True

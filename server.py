@@ -192,5 +192,16 @@ def comment_answer(answer_id):
         return render_template('comment_answer.html', answer_data=answer_data)
 
 
+@app.route('/comments/<comment_id>/delete', methods=['GET'])
+def delete_comment(comment_id):
+
+    data_handler.delete_comment(comment_id=comment_id)
+
+    return redirect(request.referrer)
+
+    """
+There is a recycle bin icon next to the comment
+Clicking the icon asks the user to confirm the deletion"""
+
 if __name__ == "__main__":
     app.run(debug=True)
