@@ -31,12 +31,12 @@ def questions():
     questions_list = data_handler.get_all_questions()
 
     # counter = c.open_counter_file()
-    if request.method == 'POST':
-        vote = request.form['vote']
-        if vote == "vote_up":
-            counter += 1
-        elif vote == "vote_down":
-            counter -= 1
+    # if request.method == 'POST':
+    #     vote = request.form['vote']
+    #     if vote == "vote_up":
+    #         counter += 1
+    #     elif vote == "vote_down":
+    #         counter -= 1
     # c.save_counter(int(counter))
 
     print(questions_list)

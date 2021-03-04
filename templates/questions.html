@@ -1,25 +1,10 @@
 {% extends 'base.html' %}
 {% block body %}
-    <div>
-        {% for question in questions_list %}
+
+    {% for question in questions_list %}
+        <p class="questions">
             <a href="/question/{{ question['id'] }}"
                class="questions"> {{ question['title'] }}</a>
-
-            <form method="POST">
-                <input type="submit" name="vote" value="vote_up">
-                <input type="submit" name="vote" value="vote_down">
-
-            </form>
-
-            <br><br><br>
-        {% endfor %}
-    </div>
-    {% block vote %}
-        {{ super() }}
-    {% endblock %}
-
-    <p>
-        {{ counter }}
-    </p>
-
+        </p>
+    {% endfor %}
 {% endblock %}

@@ -124,6 +124,7 @@ def delete_answer(cursor, id: int) -> None:
 
     return True
 
+
 @connection.connection_handler
 def fetch_comments(cursor, id, mode):
     if mode == 'question':
@@ -139,6 +140,7 @@ def fetch_comments(cursor, id, mode):
 
     cursor.execute(query, {'id': id})
     return cursor.fetchall()
+
 
 @connection.connection_handler
 def post_comment(cursor, message, id, mode):
@@ -168,6 +170,7 @@ def delete_comment(cursor, comment_id):
     cursor.execute(query, {'id': comment_id})
 
     return True
+
 
 @connection.connection_handler
 def get_comment_by_id(cursor, comment_id):
