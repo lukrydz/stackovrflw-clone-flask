@@ -9,7 +9,7 @@
 <header>
     <div class="index">
         <div><h2><a href="{{ url_for('index') }}" id="homepage">home page</a></h2></div>
-        <div><img src="{{ url_for("static", filename="sample.png") }}" alt="Granny" id="homepage_picture"></div>
+        <div><img src="{{ url_for("static", filename="sample.png") }}" alt="Granny" height="150px" id="homepage_picture"></div>
         <div onclick="location.href='{{ url_for('questions') }}'" class="home_page_links">
             list of questions
         </div>

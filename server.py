@@ -30,19 +30,6 @@ def index():
 def questions():
     questions_list = data_handler.get_all_questions()
 
-    # counter = c.open_counter_file()
-    # if request.method == 'POST':
-    #     vote = request.form['vote']
-    #     if vote == "vote_up":
-    #         counter += 1
-    #     elif vote == "vote_down":
-    #         counter -= 1
-    # c.save_counter(int(counter))
-
-    print(questions_list)
-
-    # questions are passed, need to update display format
-
     return render_template('questions.html',
                            questions_list=questions_list,
                            counter=0,
@@ -196,10 +183,7 @@ def comment_answer(answer_id):
 def edit_comment(comment_id):
 
     comment_data = data_handler.get_comment_by_id(comment_id)
-    if comment_data['question_id']:
-        referrer_question = comment_data['question_id']
-    else:
-        referrer_question = data_handler.get_answer_by_id(id=comment_data['answer_id'])['question_id']
+    referrer_question = comment_data['question_id']
 
     if request.method == 'POST':
 

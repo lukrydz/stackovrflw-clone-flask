@@ -47,10 +47,12 @@ def get_answers_for_question(cursor, question_id):
 
 @connection.connection_handler
 def get_answer_by_id(cursor, id):
+    print(f"id1 - {id}")
     cursor.execute("""
                         SELECT * FROM answer
                         WHERE id=%(id)s
                        """, {'id': id})
+    print(f"id - {id}")
     return cursor.fetchone()
 
 
