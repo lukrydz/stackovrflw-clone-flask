@@ -25,11 +25,11 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def index():
     return render_template('index.html')
 
-@app.route('/display_question')
+@app.route('/add-question')
 def display_question():
     return render_template('add_question.html')
 
-@app.route('/add_question', methods=['POST'])
+@app.route('/add-question', methods=['POST'])
 def add_question():
     if request.method == 'POST':
 
