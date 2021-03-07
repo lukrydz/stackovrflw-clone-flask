@@ -25,6 +25,33 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def index():
     return render_template('index.html')
 
+@app.route('/display_question')
+def display_question():
+    return render_template('add_question.html')
+
+@app.route('/add_question', methods=['POST'])
+def add_question():
+    if request.method == 'POST':
+
+        title = request.form['title']
+        message = request.form['message']
+
+        image = ''
+
+        if 'image' in request.files:
+            print('FOUND FILE')
+
+            file = request.files['image']
+            if file and util.allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(path)
+
+                image = path
+
+        data_handler.post_question(title, message, image)
+        questions = data_handler.get_all_questions()
+        return redirect(url_for('questions'))
 
 @app.route('/questions', methods=['GET', 'POST'])
 def questions():
