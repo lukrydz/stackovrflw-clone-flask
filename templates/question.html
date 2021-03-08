@@ -9,9 +9,18 @@
         <div class="question_message">
             {{ question_data['message'] }}
         </div>
+        <div class="question_image">
+            <img alt="" src="{{ url_for('static', filename=question_data['image']) }}"/>
+
+        </div>
         <div class="question_edit_delete">
             <div class="edit">edit</div>
-            <div class="delete">delete</div>
+            <div class="delete">
+                <a href="{{ url_for("delete_question", question_id=question_data['id']) }}"
+                   onclick="return confirm('Are you sure?')">
+                    <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
+                </a>
+            </div>
         </div>
         <div class="question_vote">
             <div>vote up</div>
