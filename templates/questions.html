@@ -1,18 +1,17 @@
 {% extends 'base.html' %}
 {% block body %}
-    <br><br><br>
-    <form method="POST">
-        <a href="{{ url_for('display_question') }}">Add Question</a>
+    <div>
 
+        {% for question in questions_list %}
+            <p class="questions">
+                <a href="/question/{{ question['id'] }}" class="questions">
+                    {{ question['title'] }}
+                </a>
+            </p>
+        {% endfor %}
 
-    </form>
-
-    {% for question in questions_list %}
-        <p class="questions">
-            <a href="/question/{{ question['id'] }}"
-               class="questions"> {{ question['title'] }}</a>
-        </p>
-
-    {% endfor %}
-
+        <span><a href="{{ url_for('add_question') }}">
+                <button>Add question</button>
+            </a></span>
+    </div>
 {% endblock %}

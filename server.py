@@ -5,14 +5,6 @@ import logging
 from werkzeug.utils import secure_filename
 import util
 
-QUESTION_ID_INDEX = 0
-QUESTION_TIME_INDEX = 1
-QUESTION_VIEW_INDEX = 2
-QUESTION_VOTE_INDEX = 3
-QUESTION_TITLE_INDEX = 4
-QUESTION_MESSAGE_INDEX = 5
-QUESTION_IMAGE_INDEX = 6
-
 app = Flask(__name__)
 
 UPLOAD_FOLDER = './static/'
@@ -26,32 +18,33 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/add-question')
-def display_question():
-    return render_template('add_question.html')
-
-
-@app.route('/add-question', methods=['POST'])
+@app.route('/new-answer', methods=['GET', 'POST'])
 def add_question():
-    title = request.form['title']
-    message = request.form['message']
+    if request.method == 'POST':
+        title = request.form['title']
+        message = request.form['message']
 
-    image = ''
+        image = ''
 
-    if 'image' in request.files:
-        print('FOUND FILE')
+        if 'image' in request.files:
+            print('FOUND FILE')
 
-        file = request.files['image']
-        if file and util.allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(path)
+            file = request.files['image']
+            if file and util.allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(path)
 
-            image = path
+                image = path
 
-    data_handler.post_question(title, message, image)
-    questions = data_handler.get_all_questions()
-    return redirect(url_for('question', question_id=questions[len(questions) - 1]['id']))
+        data_handler.post_question(title, message, image)
+        question_data = data_handler.get_latest_question()
+        print(question_data)
+        return redirect(url_for(
+            'question',
+            question_id=question_data['id']))
+
+    return render_template('add_question.html')
 
 
 @app.route('/question/<question_id>/delete')
@@ -61,7 +54,9 @@ def delete_question(question_id):
     answers = data_handler.get_answers_for_question(question_id)
 
     for answer_to_delete in answers:
-        comments_for_answers = data_handler.fetch_comments(answer_to_delete['id'], 'answer')
+        comments_for_answers = data_handler.fetch_comments(
+            answer_to_delete['id'],
+            'answer')
         for comment_to_delete in comments_for_answers:
             data_handler.delete_comment(comment_to_delete['id'])
 
@@ -81,10 +76,7 @@ def questions():
     questions_list = data_handler.get_all_questions()
 
     return render_template('questions.html',
-                           questions_list=questions_list,
-                           counter=0,
-                           QUESTION_ID_INDEX=QUESTION_ID_INDEX,
-                           QUESTION_TITLE_INDEX=QUESTION_TITLE_INDEX)
+                           questions_list=questions_list)
 
 
 @app.route('/question/<question_id>')
@@ -216,7 +208,7 @@ def comment_question(question_id):
 @app.route('/answer/<question_id><answer_id>/new-comment', methods=['GET', 'POST'])
 def comment_answer(question_id, answer_id):
     answer_data = data_handler.get_answer_by_id(answer_id)
-    # referrer_question = answer_data['question_id']
+    referrer_question = answer_data['question_id']
 
     if request.method == 'POST':
 
@@ -224,7 +216,7 @@ def comment_answer(question_id, answer_id):
 
         data_handler.post_comment(message, 'answer', question_id, answer_id)
 
-        return redirect(url_for('question', question_id=answer_data['question_id']))
+        return redirect(url_for('question', question_id=referrer_question))
 
     else:
 
@@ -235,14 +227,14 @@ def comment_answer(question_id, answer_id):
 def edit_comment(comment_id):
     comment_data = data_handler.get_comment_by_id(comment_id)
     print(comment_data)
-    # referrer_question = comment_data['question_id']
+    referrer_question = comment_data['question_id']
 
     if request.method == 'POST':
         message = request.form['message']
 
         data_handler.edit_comment(comment_id=comment_id, message=message)
 
-        return redirect(url_for('question', question_id=comment_data['question_id']))
+        return redirect(url_for('question', question_id=referrer_question))
 
     return render_template('edit_comment.html', comment_data=comment_data)
 

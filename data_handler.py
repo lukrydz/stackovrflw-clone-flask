@@ -35,6 +35,16 @@ def get_question_by_id(cursor, id):
 
 
 @connection.connection_handler
+def get_latest_question(cursor, ):
+    cursor.execute("""
+                        SELECT * FROM question
+                        ORDER BY id DESC
+                        LIMIT 1
+                        """)
+    return cursor.fetchone()
+
+
+@connection.connection_handler
 def get_all_answers(cursor):
     cursor.execute("""
                         SELECT * FROM answer
@@ -98,7 +108,7 @@ def post_answer(question_id, message, image=''):
 
 @connection.connection_handler
 def write_question(cursor, data: dict) -> bool:
-    # [answer_id, submission_time, vote_number, question_id, message, image]
+    # {answer_id, submission_time, vote_number, question_id, message, image}
 
     query = """
                 INSERT INTO question (
