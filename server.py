@@ -204,7 +204,7 @@ def comment_question(question_id):
 
         message = request.form['message']
 
-        data_handler.post_comment(message, question_id, 'question')
+        data_handler.post_comment(message, 'question', question_id)
 
         return redirect(url_for('question', question_id=question_id))
 
@@ -213,18 +213,18 @@ def comment_question(question_id):
         return render_template('add_comment.html', question_data=question_data)
 
 
-@app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
-def comment_answer(answer_id):
+@app.route('/answer/<question_id><answer_id>/new-comment', methods=['GET', 'POST'])
+def comment_answer(question_id, answer_id):
     answer_data = data_handler.get_answer_by_id(answer_id)
-    referrer_question = answer_data['question_id']
+    # referrer_question = answer_data['question_id']
 
     if request.method == 'POST':
 
         message = request.form['message']
 
-        data_handler.post_comment(message, answer_id, 'answer')
+        data_handler.post_comment(message, 'answer', question_id, answer_id)
 
-        return redirect(url_for('question', question_id=referrer_question))
+        return redirect(url_for('question', question_id=answer_data['question_id']))
 
     else:
 
@@ -235,14 +235,14 @@ def comment_answer(answer_id):
 def edit_comment(comment_id):
     comment_data = data_handler.get_comment_by_id(comment_id)
     print(comment_data)
-    referrer_question = comment_data['question_id']
+    # referrer_question = comment_data['question_id']
 
     if request.method == 'POST':
         message = request.form['message']
 
         data_handler.edit_comment(comment_id=comment_id, message=message)
 
-        return redirect(url_for('question', question_id=referrer_question))
+        return redirect(url_for('question', question_id=comment_data['question_id']))
 
     return render_template('edit_comment.html', comment_data=comment_data)
 

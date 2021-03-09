@@ -12,10 +12,10 @@
             {{ question_data['message'] }}
             {{ question_data['image'] }}
         </div>
-{#        <div class="question_image">#}
-{#            <img alt="" src="{{ url_for('static', filename=question_data['image']) }}"/>#}
-{##}
-{#        </div>#}
+        {#        <div class="question_image">#}
+        {#            <img alt="" src="{{ url_for('static', filename=question_data['image']) }}"/>#}
+        {##}
+        {#        </div>#}
         <div class="box_edit_delete">
             <div class="edit">edit</div>
             <div class="delete">
@@ -54,6 +54,7 @@
             </div>
             <div class="box_edit_delete">
                 <div class="edit">
+
                     <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
                         <button>EDIT COMMENT</button>
                     </a>
@@ -124,15 +125,9 @@
 
         {#            {{ comment_for_answers[answer['id']] }}#}
 
-        <span><a href="{{ url_for('comment_answer', answer_id=answer['id']) }}">
+        <span><a href="{{ url_for('comment_answer', question_id=question_data['id'], answer_id=answer['id']) }}">
                 <button>add comment</button>
             </a></span>
-
-        {% for comment in comment_for_answers[answer['id']] %}
-
-
-
-        {% endfor %}
 
         {% for comment in comment_for_answers[answer['id']] %}
             <div class="box comment_for_answer">
@@ -144,6 +139,7 @@
                 </div>
                 <div class="box_edit_delete">
                     <div class="edit">
+
                         <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
                             <button>Edit comment</button>
                         </a>

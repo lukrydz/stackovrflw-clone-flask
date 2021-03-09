@@ -1,7 +1,13 @@
 import connection
 import util
 
-DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+DATA_HEADER = ['id',
+               'submission_time',
+               'view_number',
+               'vote_number',
+               'title',
+               'message',
+               'image']
 
 
 def get_headers():
@@ -65,13 +71,14 @@ def post_question(title, message, image=''):
     image = image
 
     data = {'submission_time': submission_time,
-            'view_number' : view_number,
+            'view_number': view_number,
             'vote_number': vote_number,
             'title': title,
             'message': message,
             'image': image}
 
     write_question(data=data)
+
 
 def post_answer(question_id, message, image=''):
     submission_time = str(util.get_timestamp())
@@ -88,25 +95,44 @@ def post_answer(question_id, message, image=''):
 
     write_answer(data=data)
 
+
 @connection.connection_handler
-def write_question(cursor, data: dict) -> None:
+def write_question(cursor, data: dict) -> bool:
     # [answer_id, submission_time, vote_number, question_id, message, image]
 
     query = """
-                INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                VALUES (%(submission_time)s,%(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s)
+                INSERT INTO question (
+                submission_time,
+                view_number,
+                vote_number,
+                title,
+                message,
+                image)
+                VALUES (
+                %(submission_time)s,
+                %(view_number)s,
+                %(vote_number)s,
+                %(title)s,
+                %(message)s,
+                %(image)s)
                            """
 
     cursor.execute(query, data)
     print(cursor.lastrowid)
     return True
 
+
 @connection.connection_handler
-def write_answer(cursor, data: dict) -> None:
+def write_answer(cursor, data: dict) -> bool:
     # [answer_id, submission_time, vote_number, question_id, message, image]
 
     query = """
-                INSERT INTO answer (submission_time, vote_number, question_id, message, image)
+                INSERT INTO answer (
+                submission_time,
+                vote_number,
+                question_id,
+                message,
+                image)
                 VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
                            """
 
@@ -129,7 +155,11 @@ def answer_update(cursor, answer_id, newmessage, newimage):
                 SET message = %(newmessage)s
                 WHERE id = %(answer_id)s        
         """
-    cursor.execute(query, {'answer_id': answer_id, 'newmessage': newmessage, 'newimage': newimage})
+    cursor.execute(
+        query,
+        {'answer_id': answer_id,
+         'newmessage': newmessage,
+         'newimage': newimage})
 
 
 @connection.connection_handler
@@ -142,6 +172,7 @@ def vote_answer(cursor, answer_id, value):
     cursor.execute(query, {'vote': value, 'answer_id': answer_id})
 
     return True
+
 
 @connection.connection_handler
 def delete_question(cursor, id: int):
@@ -156,7 +187,7 @@ def delete_question(cursor, id: int):
 
 
 @connection.connection_handler
-def delete_answer(cursor, id: int) -> None:
+def delete_answer(cursor, id: int) -> bool:
     query = """
             DELETE FROM answer
             WHERE id=%(id)s
@@ -185,20 +216,29 @@ def fetch_comments(cursor, id, mode):
 
 
 @connection.connection_handler
-def post_comment(cursor, message, id, mode):
+def post_comment(cursor, message, mode, id_question="null2", id_answer="null2"):
     submission_time = util.get_timestamp()
     if mode == 'question':
         query_for_question = """
             INSERT INTO comment (question_id, message, submission_time)
             VALUES (%(question_id)s, %(message)s, %(submission_time)s)          
     """
-        cursor.execute(query_for_question, {'question_id': id, 'message': message, 'submission_time': submission_time})
+        cursor.execute(
+            query_for_question,
+            {'question_id': id_question,
+             'message': message,
+             'submission_time': submission_time})
     else:
         query_for_answer = """
-                INSERT INTO comment (answer_id, message, submission_time)
-                VALUES (%(answer_id)s, %(message)s, %(submission_time)s)          
+                INSERT INTO comment (question_id, answer_id, message, submission_time)
+                VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)          
         """
-        cursor.execute(query_for_answer, {'answer_id': id, 'message': message, 'submission_time': submission_time})
+        cursor.execute(
+            query_for_answer,
+            {'question_id': id_question,
+             'answer_id': id_answer,
+             'message': message,
+             'submission_time': submission_time})
 
     return True
 
