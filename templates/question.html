@@ -17,7 +17,16 @@
         {##}
         {#        </div>#}
         <div class="box_edit_delete">
-            <div class="edit">edit</div>
+            <div class="edit">
+
+                <a href="{{ url_for('display_edit_question', question_id=question_data['id']) }}">
+                    <button>Edit Question</button>
+                </a>
+
+
+            </div>
+
+
             <div class="delete">
                 <a href="{{ url_for("delete_question", question_id=question_data['id']) }}"
                    onclick="return confirm('Are you sure?')">

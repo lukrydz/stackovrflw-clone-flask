@@ -47,6 +47,39 @@ def add_question():
     return render_template('add_question.html')
 
 
+@app.route('/question/<question_id>/edit', methods=['GET'])
+def display_edit_question(question_id):
+    question_data = data_handler.get_question_by_id(question_id)
+    return render_template('edit_question.html',
+                           question_id=question_id,
+                           title=question_data['title'],
+                           message=question_data['message'])
+
+
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    question_data = data_handler.get_question_by_id(question_id)
+
+    image = ''
+
+    if 'image' in request.files:
+
+        file = request.files['image']
+        if file and util.allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(path)
+
+            image = path
+
+    new_title = request.form['title']
+    new_message = request.form['message']
+
+    data_handler.question_update(question_id, new_title, new_message, image)
+
+    return redirect(url_for('question', question_id=question_id))
+
+
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
     # TODO delete tags for question ID

@@ -111,25 +111,25 @@ def write_question(cursor, data: dict) -> bool:
     # {answer_id, submission_time, vote_number, question_id, message, image}
 
     query = """
-                INSERT INTO question (
-                submission_time,
-                view_number,
-                vote_number,
-                title,
-                message,
-                image)
-                VALUES (
-                %(submission_time)s,
-                %(view_number)s,
-                %(vote_number)s,
-                %(title)s,
-                %(message)s,
-                %(image)s)
+                INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
+                VALUES (%(submission_time)s,%(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s)
                            """
 
     cursor.execute(query, data)
     print(cursor.lastrowid)
     return True
+
+
+@connection.connection_handler
+def question_update(cursor, question_id, new_title, new_message, newimage):
+    query = """
+            UPDATE question
+            SET title = %(new_title)s, message = %(new_message)s, image= %(newimage)s
+            WHERE id = %(question_id)s        
+    """
+
+    cursor.execute(query, {'question_id': question_id, 'new_title': new_title, 'new_message': new_message,
+                           'newimage': newimage})
 
 
 @connection.connection_handler
@@ -156,7 +156,7 @@ def answer_update(cursor, answer_id, newmessage, newimage):
     if newimage != '':
         query = """
                 UPDATE answer
-                SET message = %(newmessage)s, image=%(newimage)s
+                SET message = %(newmessage)s, image= %(newimage)s
                 WHERE id = %(answer_id)s        
         """
     else:
@@ -279,7 +279,7 @@ def get_comment_by_id(cursor, comment_id):
 def edit_comment(cursor, comment_id, message):
     query = """
             UPDATE comment
-            SET message=%(message)s, edited_count=COALESCE(edited_count, 0) + 1
+            SET message = %(message)s, edited_count=COALESCE(edited_count, 0) + 1
             WHERE id=%(comment_id)s
     """
     cursor.execute(query, {'message': message, 'comment_id': comment_id})
