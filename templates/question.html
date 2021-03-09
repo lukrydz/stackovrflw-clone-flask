@@ -1,19 +1,31 @@
 {% extends 'base.html' %}
 {% block body %}
 
-    <div class="question">
-        <div class="question_title">
+    <div class="box question">
+        <div class="box_title">
             <h3>{{ question_data['title'] }}</h3>
         </div>
-        <div>{{ question_data['submission_time'] }}</div>
-        <div class="question_message">
+        <div>
+            {{ question_data['submission_time'] }}
+        </div>
+        <div class="box_message">
             {{ question_data['message'] }}
+            {{ question_data['image'] }}
         </div>
-        <div class="question_edit_delete">
+{#        <div class="question_image">#}
+{#            <img alt="" src="{{ url_for('static', filename=question_data['image']) }}"/>#}
+{##}
+{#        </div>#}
+        <div class="box_edit_delete">
             <div class="edit">edit</div>
-            <div class="delete">delete</div>
+            <div class="delete">
+                <a href="{{ url_for("delete_question", question_id=question_data['id']) }}"
+                   onclick="return confirm('Are you sure?')">
+                    <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
+                </a>
+            </div>
         </div>
-        <div class="question_vote">
+        <div class="box_vote">
             <div>vote up</div>
             <div>vote down</div>
             <div></div>
@@ -30,25 +42,30 @@
 
 
     {% for comment in comments_for_question %}
-        <div class="comment">
-            <div class="comment_title">
+        <div class="box comment_for_question">
+            <div class="box_title">
+
             </div>
-            <div>{{ comment['submission_time'] }}</div>
-            <div class="comment_message">
+            <div>
+                {{ comment['submission_time'] }}
+            </div>
+            <div class="box_message">
                 {{ comment['message'] }}
             </div>
-            <div class="comment_edit_delete">
-                <div class="edit"><a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
-                    <button>EDIT COMMENT</button>
-                </a>
+            <div class="box_edit_delete">
+                <div class="edit">
+                    <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
+                        <button>EDIT COMMENT</button>
+                    </a>
                 </div>
                 <div class="delete">
                     <a href="{{ url_for('delete_comment', comment_id=comment['id']) }}"
                        onclick="return confirm('Are you sure?')">
                         <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
-                    </a></div>
+                    </a>
+                </div>
             </div>
-            <div class="comment_vote">
+            <div class="box_vote">
                 <div>vote up</div>
                 <div>vote down</div>
                 <div></div>
@@ -67,40 +84,89 @@
 
 
     {% for answer in answers %}
-        <div class="answer">
-            <div class="answer_title"></div>
-            <div>{{ answer['submission_time'] }}</div>
-            <div class="answer_message">
+        <div class="box answer">
+            <div class="box_title">
+                {# blank #}
+            </div>
+            <div>
+                {{ answer['submission_time'] }}
+            </div>
+            <div class="box_message">
                 {{ answer['message'] }}
             </div>
-            <div class="answer_edit_delete">
-                <div class="edit"><a href="{{ url_for('edit_answer', answer_id=answer['id']) }}">
-                    <button>Edit answer</button>
-                </a></div>
-                <div class="delete"><a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">
-                    <button onclick="return confirm('Are you sure?')">delete</button>
-                </a></div>
+            <div class="box_edit_delete">
+                <div class="edit">
+                    <a href="{{ url_for('edit_answer', answer_id=answer['id']) }}">
+                        <button>Edit answer</button>
+                    </a>
+                </div>
+                <div class="delete">
+                    <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">
+                        <button onclick="return confirm('Are you sure?')">delete</button>
+                    </a>
+                </div>
             </div>
-            <div class="answer_vote">
-                <div><a href="{{ url_for('vote', answer_id=answer['id'], vote_up_or_down='vote_up') }}">
-                    <button>vote up</button>
-                </a></div>
-                <div><a href="{{ url_for('vote', answer_id=answer['id'], vote_up_or_down='vote_down') }}">
-                    <button>vote down</button>
-                </a></div>
+            <div class="box_vote">
+                <div>
+                    <a href="{{ url_for('vote', answer_id=answer['id'], vote_up_or_down='vote_up') }}">
+                        <button>vote up</button>
+                    </a>
+                </div>
+                <div>
+                    <a href="{{ url_for('vote', answer_id=answer['id'], vote_up_or_down='vote_down') }}">
+                        <button>vote down</button>
+                    </a>
+                </div>
                 <div></div>
                 <div> {{ answer['vote_number'] }}</div>
             </div>
-
-            {% for comment in comment_for_answers[answer['id']] %}
-                {{ comment }}
-                <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">EDIT COMMENT</a>
-                <a href="{{ url_for('delete_comment', comment_id=comment['id']) }}"
-                   onclick="return confirm('Are you sure?')">
-                    <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
-                </a>
-            {% endfor %}
         </div>
+
+        {#            {{ comment_for_answers[answer['id']] }}#}
+
+        <span><a href="{{ url_for('comment_answer', answer_id=answer['id']) }}">
+                <button>add comment</button>
+            </a></span>
+
+        {% for comment in comment_for_answers[answer['id']] %}
+
+
+
+        {% endfor %}
+
+        {% for comment in comment_for_answers[answer['id']] %}
+            <div class="box comment_for_answer">
+                <div class="box_title"></div>
+                <div>{{ comment['submission_time'] }}</div>
+                <div class="box_message">
+                    {{ comment['message'] }}
+
+                </div>
+                <div class="box_edit_delete">
+                    <div class="edit">
+                        <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
+                            <button>Edit comment</button>
+                        </a>
+                    </div>
+                    <div class="delete">
+                        <a href="{{ url_for('delete_comment', comment_id=comment['id']) }}"
+                           onclick="return confirm('Are you sure?')">
+                            <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="box_vote">
+                    <div>
+                        <button>vote up</button>
+                    </div>
+                    <div>
+                        <button>vote down</button>
+                    </div>
+                    <div></div>
+                    <div>vote number</div>
+                </div>
+            </div>
+        {% endfor %}
     {% endfor %}
 
 {% endblock %}

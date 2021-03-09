@@ -26,6 +26,56 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/add-question')
+def display_question():
+    return render_template('add_question.html')
+
+
+@app.route('/add-question', methods=['POST'])
+def add_question():
+    title = request.form['title']
+    message = request.form['message']
+
+    image = ''
+
+    if 'image' in request.files:
+        print('FOUND FILE')
+
+        file = request.files['image']
+        if file and util.allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(path)
+
+            image = path
+
+    data_handler.post_question(title, message, image)
+    questions = data_handler.get_all_questions()
+    return redirect(url_for('question', question_id=questions[len(questions) - 1]['id']))
+
+
+@app.route('/question/<question_id>/delete')
+def delete_question(question_id):
+    # TODO delete tags for question ID
+
+    answers = data_handler.get_answers_for_question(question_id)
+
+    for answer_to_delete in answers:
+        comments_for_answers = data_handler.fetch_comments(answer_to_delete['id'], 'answer')
+        for comment_to_delete in comments_for_answers:
+            data_handler.delete_comment(comment_to_delete['id'])
+
+        data_handler.delete_answer(answer_to_delete['id'])
+
+    comments_for_question = data_handler.fetch_comments(question_id, 'question')
+    for comment_to_delete in comments_for_question:
+        data_handler.delete_comment(comment_to_delete['id'])
+
+    data_handler.delete_question(question_id)
+
+    return redirect(url_for('questions'))
+
+
 @app.route('/questions', methods=['GET', 'POST'])
 def questions():
     questions_list = data_handler.get_all_questions()
@@ -49,11 +99,14 @@ def question(question_id):
     comment_for_answers = dict()
 
     for answer in answers:
-        comment_for_answers[answer['id']] = data_handler.fetch_comments(id=answer['id'], mode='answer')
+        comment_for_answers[answer['id']] = data_handler.fetch_comments(id=answer['id'],
+                                                                        mode='answer')
 
     return render_template('question.html',
                            question_data=question_data,
-                           answers=answers, comments_for_question=comments, comment_for_answers=comment_for_answers)
+                           answers=answers,
+                           comments_for_question=comments,
+                           comment_for_answers=comment_for_answers)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -95,7 +148,7 @@ def edit_answer(answer_id):
 
     referrer_question = answer_data['question_id']
 
-    # IF THERE IS POST FORM MAKE UPDATE
+    # if there is POST form make an update
     if request.method == 'POST':
 
         image = ''
@@ -116,13 +169,14 @@ def edit_answer(answer_id):
 
         return redirect(url_for('question', question_id=referrer_question))
 
-    # ELSE SHOW FORM WITH ANSWER DATA
-    return render_template('edit_answer.html', answer_data=answer_data, question_dictionary=question_data)
+    # else show form with answer data
+    return render_template('edit_answer.html',
+                           answer_data=answer_data,
+                           question_dictionary=question_data)
 
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
-
     referrer_question = data_handler.get_answer_by_id(answer_id)['question_id']
 
     data_handler.delete_answer(answer_id)
@@ -144,7 +198,6 @@ def vote(answer_id, vote_up_or_down):
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def comment_question(question_id):
-
     question_data = data_handler.get_question_by_id(question_id)
 
     if request.method == 'POST':
@@ -162,7 +215,6 @@ def comment_question(question_id):
 
 @app.route('/answer/<answer_id>/new-comment', methods=['GET', 'POST'])
 def comment_answer(answer_id):
-
     answer_data = data_handler.get_answer_by_id(answer_id)
     referrer_question = answer_data['question_id']
 
@@ -181,12 +233,11 @@ def comment_answer(answer_id):
 
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
-
     comment_data = data_handler.get_comment_by_id(comment_id)
+    print(comment_data)
     referrer_question = comment_data['question_id']
 
     if request.method == 'POST':
-
         message = request.form['message']
 
         data_handler.edit_comment(comment_id=comment_id, message=message)
@@ -198,7 +249,6 @@ def edit_comment(comment_id):
 
 @app.route('/comments/<comment_id>/delete', methods=['GET'])
 def delete_comment(comment_id):
-
     data_handler.delete_comment(comment_id=comment_id)
 
     return redirect(request.referrer)

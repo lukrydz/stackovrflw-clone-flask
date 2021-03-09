@@ -56,6 +56,23 @@ def get_answer_by_id(cursor, id):
     return cursor.fetchone()
 
 
+def post_question(title, message, image=''):
+    submission_time = str(util.get_timestamp())
+    vote_number = '0'
+    view_number = '0'
+    title = str(title)
+    message = f'"{message}"'
+    image = image
+
+    data = {'submission_time': submission_time,
+            'view_number' : view_number,
+            'vote_number': vote_number,
+            'title': title,
+            'message': message,
+            'image': image}
+
+    write_question(data=data)
+
 def post_answer(question_id, message, image=''):
     submission_time = str(util.get_timestamp())
     vote_number = '0'
@@ -71,6 +88,18 @@ def post_answer(question_id, message, image=''):
 
     write_answer(data=data)
 
+@connection.connection_handler
+def write_question(cursor, data: dict) -> None:
+    # [answer_id, submission_time, vote_number, question_id, message, image]
+
+    query = """
+                INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
+                VALUES (%(submission_time)s,%(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s)
+                           """
+
+    cursor.execute(query, data)
+    print(cursor.lastrowid)
+    return True
 
 @connection.connection_handler
 def write_answer(cursor, data: dict) -> None:
@@ -111,6 +140,17 @@ def vote_answer(cursor, answer_id, value):
             WHERE id = %(answer_id)s
                        """
     cursor.execute(query, {'vote': value, 'answer_id': answer_id})
+
+    return True
+
+@connection.connection_handler
+def delete_question(cursor, id: int):
+    query = """
+            DELETE FROM question
+            WHERE id=%(id)s
+                       """
+
+    cursor.execute(query, {'id': id})
 
     return True
 
