@@ -4,17 +4,17 @@
 
 <form action="{{ url_for('edit_question', question_id=question_id) }}" method='post'
     enctype="multipart/form-data" id="add_question_form">
-    <label for="title">Title:</label><br>
+    <label for="title">Edit Title:</label><br>
     <input type="text" name="title" id="title" value="{{ title }}"><br>
     <br>
-    <label for="question">Ask Your Question:</label><br>
+    <label for="question">Edit Your Question:</label><br>
     <textarea name="message" id="message">{{ message }}</textarea><br>
     <br>
     <input type="file" name="image">
 
 
-        <br>
-    <input type="submit" value="add">
+        <br><br>
+    <input type="submit" value="Save">
 </form>
 
 
