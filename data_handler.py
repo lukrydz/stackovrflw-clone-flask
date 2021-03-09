@@ -65,13 +65,14 @@ def post_question(title, message, image=''):
     image = image
 
     data = {'submission_time': submission_time,
-            'view_number' : view_number,
+            'view_number': view_number,
             'vote_number': vote_number,
             'title': title,
             'message': message,
             'image': image}
 
     write_question(data=data)
+
 
 def post_answer(question_id, message, image=''):
     submission_time = str(util.get_timestamp())
@@ -88,6 +89,7 @@ def post_answer(question_id, message, image=''):
 
     write_answer(data=data)
 
+
 @connection.connection_handler
 def write_question(cursor, data: dict) -> None:
     # [answer_id, submission_time, vote_number, question_id, message, image]
@@ -100,6 +102,19 @@ def write_question(cursor, data: dict) -> None:
     cursor.execute(query, data)
     print(cursor.lastrowid)
     return True
+
+
+@connection.connection_handler
+def question_update(cursor, question_id, new_title, new_message, newimage):
+    query = """
+            UPDATE question
+            SET title = %(new_title)s, message = %(new_message)s, image= %(newimage)s
+            WHERE id = %(question_id)s        
+    """
+
+    cursor.execute(query, {'question_id': question_id, 'new_title': new_title, 'new_message': new_message,
+                           'newimage': newimage})
+
 
 @connection.connection_handler
 def write_answer(cursor, data: dict) -> None:
@@ -120,7 +135,7 @@ def answer_update(cursor, answer_id, newmessage, newimage):
     if newimage != '':
         query = """
                 UPDATE answer
-                SET message = %(newmessage)s, image=%(newimage)s
+                SET message = %(newmessage)s, image= %(newimage)s
                 WHERE id = %(answer_id)s        
         """
     else:
@@ -142,6 +157,7 @@ def vote_answer(cursor, answer_id, value):
     cursor.execute(query, {'vote': value, 'answer_id': answer_id})
 
     return True
+
 
 @connection.connection_handler
 def delete_question(cursor, id: int):
@@ -229,7 +245,7 @@ def get_comment_by_id(cursor, comment_id):
 def edit_comment(cursor, comment_id, message):
     query = """
             UPDATE comment
-            SET message=%(message)s, edited_count=COALESCE(edited_count, 0) + 1
+            SET message = %(message)s, edited_count=COALESCE(edited_count, 0) + 1
             WHERE id=%(comment_id)s
     """
     cursor.execute(query, {'message': message, 'comment_id': comment_id})
