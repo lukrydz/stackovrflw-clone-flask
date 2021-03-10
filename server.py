@@ -18,6 +18,16 @@ def index():
     return render_template('index.html')
 
 
+@app.route("/registration", methods=['GET'])
+def register():
+    return render_template('register.html')
+
+
+@app.route("/registration", methods=['POST'])
+def adduser():
+    return redirect(url_for('index'))
+
+
 @app.route('/new-answer', methods=['GET', 'POST'])
 def add_question():
     if request.method == 'POST':

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    <div id="registration-form">
+   <form action="{{ url_for('adduser') }}" method="post" id="registration-form">
+       <label for="username">username (e-mail): <input type="text" name="username" /></label>
+       <label for="username">password: <input type="password" name="password" /></label>
+        <input type="submit" value="Register">
+   </form>
+    </div>
+
+{% endblock %}
