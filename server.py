@@ -1,7 +1,6 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, session
 import os
 import data_handler
-import logging
 from werkzeug.utils import secure_filename
 import util
 
@@ -25,6 +24,11 @@ def register():
 
 @app.route("/registration", methods=['POST'])
 def adduser():
+
+    username, password = request.form['username'], request.form['password']
+
+    data_handler.adduser(username, password)
+
     return redirect(url_for('index'))
 
 

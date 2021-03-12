@@ -285,3 +285,20 @@ def edit_comment(cursor, comment_id, message):
     cursor.execute(query, {'message': message, 'comment_id': comment_id})
 
     return True
+
+
+def adduser(username, password):
+
+    hashed_pw = util.hash_password(password)
+
+    @connection.connection_handler
+    def adduserToBase(cursor, username, hashed_pw):
+        query = """
+                INSERT INTO users (username, pw_hash, registration_date, reputation) 
+                VALUES (%(username)s, %(pw_hash)s, %(regdate)s, %(reputation)s)        
+        """
+        cursor.execute(query, {'username': username, 'pw_hash': hashed_pw, 'regdate': util.get_timestamp(), 'reputation': 0})
+
+    adduserToBase(username=username, hashed_pw=hashed_pw)
+
+    return True
