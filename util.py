@@ -13,6 +13,10 @@ def get_timestamp():
     return datetime.datetime.now()
 
 
+def get_expiration(days):
+    return datetime.datetime.now() + datetime.timedelta(days=days)
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 

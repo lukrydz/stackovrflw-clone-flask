@@ -6,6 +6,8 @@ import util
 
 app = Flask(__name__)
 
+app.secret_key = b'\x90\xb5\x14\x04k\x99\x92O\xce1n\xd8K\x83Cd'
+
 UPLOAD_FOLDER = './static/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -42,8 +44,11 @@ def login_post():
 
     login, password = request.form['username'], request.form['password']
 
-#     check credentials
-    print(data_handler.check_credentials(login, password))
+    if data_handler.check_credentials(login, password):
+        session['session_id'] = data_handler.open_session(login)
+    # store session info in da cookie
+
+    print(session['session_id'])
 
     return ""
 

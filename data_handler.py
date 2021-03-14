@@ -322,3 +322,20 @@ def check_credentials(login, password):
         return util.verify_password(password, pw_hash)
     else:
         return False
+
+
+def open_session(login):
+    session_id = str(util.generate_uuid())
+    expiration_date = util.get_expiration(30)
+
+    @connection.connection_handler
+    def save_session_info(cursor, login, session_id):
+        query = """
+            INSERT INTO sessions (user_id, session_id, expiration_date)
+            VALUES ((SELECT id FROM users WHERE username = %(login)s), %(session_id)s, %(expiration_date)s)
+        """
+        cursor.execute(query, {'login': login, 'session_id': session_id, 'expiration_date': expiration_date})
+
+    save_session_info(login=login, session_id=session_id)
+
+    return session_id
