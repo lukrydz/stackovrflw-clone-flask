@@ -1,11 +1,12 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, session, flash
 import os
 import data_handler
-import logging
 from werkzeug.utils import secure_filename
 import util
 
 app = Flask(__name__)
+
+app.secret_key = b'\x90\xb5\x14\x04k\x99\x92O\xce1n\xd8K\x83Cd'
 
 UPLOAD_FOLDER = './static/'
 
@@ -15,7 +16,44 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route("/", methods=['GET', 'POST'])
 @app.route('/index')
 def index():
+
+    logged_user = data_handler.verify_session(session['session_id'])
+
     return render_template('index.html')
+
+
+@app.route("/registration", methods=['GET'])
+def register():
+    return render_template('register.html')
+
+
+@app.route("/registration", methods=['POST'])
+def adduser():
+
+    username, password = request.form['username'], request.form['password']
+
+    data_handler.adduser(username, password)
+
+    return redirect(url_for('index'))
+
+
+@app.route("/login", methods=['GET'])
+def login_get():
+    return render_template('login.html')
+
+
+@app.route("/login", methods=['POST'])
+def login_post():
+
+    login, password = request.form['username'], request.form['password']
+
+    if data_handler.check_credentials(login, password):
+        session['session_id'] = data_handler.open_session(login)
+    else:
+        flash('Invalid credentials.')
+        return redirect(url_for('login_get'))
+
+    return redirect(url_for('index'))
 
 
 @app.route('/new-answer', methods=['GET', 'POST'])

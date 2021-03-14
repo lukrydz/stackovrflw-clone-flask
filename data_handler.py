@@ -285,3 +285,88 @@ def edit_comment(cursor, comment_id, message):
     cursor.execute(query, {'message': message, 'comment_id': comment_id})
 
     return True
+
+
+def adduser(username, password):
+
+    hashed_pw = util.hash_password(password)
+
+    @connection.connection_handler
+    def adduserToBase(cursor, username, hashed_pw):
+        query = """
+                INSERT INTO users (username, pw_hash, registration_date, reputation) 
+                VALUES (%(username)s, %(pw_hash)s, %(regdate)s, %(reputation)s)        
+        """
+        cursor.execute(query, {'username': username, 'pw_hash': hashed_pw, 'regdate': util.get_timestamp(), 'reputation': 0})
+
+    adduserToBase(username=username, hashed_pw=hashed_pw)
+
+    return True
+
+
+def check_credentials(login, password):
+
+    @connection.connection_handler
+    def check_for_login(cursor, login):
+        query = """
+            SELECT username, pw_hash FROM users
+            WHERE username = %(login)s        
+        """
+        cursor.execute(query, {'login': login})
+        return cursor.fetchone()
+
+    credentials = check_for_login(login=login)
+
+    if credentials:
+        pw_hash = credentials['pw_hash']
+        return util.verify_password(password, pw_hash)
+    else:
+        return False
+
+
+def open_session(login):
+    session_id = str(util.generate_uuid())
+    expiration_date = util.get_expiration(30)
+
+    @connection.connection_handler
+    def save_session_info(cursor, login, session_id):
+        query = """
+            INSERT INTO sessions (user_id, session_id, expiration_date)
+            VALUES ((SELECT id FROM users WHERE username = %(login)s), %(session_id)s, %(expiration_date)s)
+        """
+        cursor.execute(query, {'login': login, 'session_id': session_id, 'expiration_date': expiration_date})
+
+    save_session_info(login=login, session_id=session_id)
+
+    return session_id
+
+def verify_session(token):
+
+    @connection.connection_handler
+    def lookup_session(cursor, session_id):
+        query = """
+                SELECT user_id, expiration_date FROM sessions
+                WHERE session_id = %(session_id)s
+        """
+        cursor.execute(query, {'session_id': session_id})
+        return cursor.fetchone()
+
+    @connection.connection_handler
+    def purge_session(cursor, session_id):
+        query = """
+                DELETE FROM sessions
+                WHERE session_id = %(session_id)s
+        """
+        cursor.execute(query, {'session_id': session_id})
+
+    if lookup_session(session_id=token):
+        session_data = lookup_session(session_id=token)
+
+        if session_data['expiration_date'] < util.get_timestamp():
+            purge_session(session_id=token)
+            return False
+
+        return session_data['user_id']
+
+    else:
+        return False
