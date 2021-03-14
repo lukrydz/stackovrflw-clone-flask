@@ -302,3 +302,23 @@ def adduser(username, password):
     adduserToBase(username=username, hashed_pw=hashed_pw)
 
     return True
+
+
+def check_credentials(login, password):
+
+    @connection.connection_handler
+    def check_for_login(cursor, login):
+        query = """
+            SELECT username, pw_hash FROM users
+            WHERE username = %(login)s        
+        """
+        cursor.execute(query, {'login': login})
+        return cursor.fetchone()
+
+    credentials = check_for_login(login=login)
+
+    if credentials:
+        pw_hash = credentials['pw_hash']
+        return util.verify_password(password, pw_hash)
+    else:
+        return False

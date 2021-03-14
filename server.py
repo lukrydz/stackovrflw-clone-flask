@@ -32,6 +32,23 @@ def adduser():
     return redirect(url_for('index'))
 
 
+@app.route("/login", methods=['GET'])
+def login_get():
+    return render_template('login.html')
+
+
+@app.route("/login", methods=['POST'])
+def login_post():
+
+    login, password = request.form['username'], request.form['password']
+
+#     check credentials
+    print(data_handler.check_credentials(login, password))
+
+    return ""
+
+
+
 @app.route('/new-answer', methods=['GET', 'POST'])
 def add_question():
     if request.method == 'POST':
