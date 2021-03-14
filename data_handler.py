@@ -339,3 +339,34 @@ def open_session(login):
     save_session_info(login=login, session_id=session_id)
 
     return session_id
+
+def verify_session(token):
+
+    @connection.connection_handler
+    def lookup_session(cursor, session_id):
+        query = """
+                SELECT user_id, expiration_date FROM sessions
+                WHERE session_id = %(session_id)s
+        """
+        cursor.execute(query, {'session_id': session_id})
+        return cursor.fetchone()
+
+    @connection.connection_handler
+    def purge_session(cursor, session_id):
+        query = """
+                DELETE FROM sessions
+                WHERE session_id = %(session_id)s
+        """
+        cursor.execute(query, {'session_id': session_id})
+
+    if lookup_session(session_id=token):
+        session_data = lookup_session(session_id=token)
+
+        if session_data['expiration_date'] < util.get_timestamp():
+            purge_session(session_id=token)
+            return False
+
+        return session_data['user_id']
+
+    else:
+        return False

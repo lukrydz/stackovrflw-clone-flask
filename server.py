@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, session
+from flask import Flask, render_template, url_for, redirect, request, session, flash
 import os
 import data_handler
 from werkzeug.utils import secure_filename
@@ -16,6 +16,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route("/", methods=['GET', 'POST'])
 @app.route('/index')
 def index():
+
+    logged_user = data_handler.verify_session(session['session_id'])
+
     return render_template('index.html')
 
 
@@ -46,12 +49,11 @@ def login_post():
 
     if data_handler.check_credentials(login, password):
         session['session_id'] = data_handler.open_session(login)
-    # store session info in da cookie
+    else:
+        flash('Invalid credentials.')
+        return redirect(url_for('login_get'))
 
-    print(session['session_id'])
-
-    return ""
-
+    return redirect(url_for('index'))
 
 
 @app.route('/new-answer', methods=['GET', 'POST'])
