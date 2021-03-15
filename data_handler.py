@@ -72,7 +72,7 @@ def get_answer_by_id(cursor, id):
     return cursor.fetchone()
 
 
-def post_question(title, message, image=''):
+def post_question(logged_user, title, message, image=''):
     submission_time = str(util.get_timestamp())
     vote_number = '0'
     view_number = '0'
@@ -85,7 +85,8 @@ def post_question(title, message, image=''):
             'vote_number': vote_number,
             'title': title,
             'message': message,
-            'image': image}
+            'image': image,
+            'author': logged_user}
 
     write_question(data=data)
 
@@ -111,8 +112,8 @@ def write_question(cursor, data: dict) -> bool:
     # {answer_id, submission_time, vote_number, question_id, message, image}
 
     query = """
-                INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                VALUES (%(submission_time)s,%(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s)
+                INSERT INTO question (submission_time, view_number, vote_number, title, message, image, author)
+                VALUES (%(submission_time)s,%(view_number)s, %(vote_number)s, %(title)s, %(message)s, %(image)s, %(author)s)
                            """
 
     cursor.execute(query, data)

@@ -58,6 +58,9 @@ def login_post():
 
 @app.route('/new-answer', methods=['GET', 'POST'])
 def add_question():
+
+    logged_user = data_handler.verify_session(session['session_id'])
+
     if request.method == 'POST':
         title = request.form['title']
         message = request.form['message']
@@ -75,14 +78,14 @@ def add_question():
 
                 image = path
 
-        data_handler.post_question(title, message, image)
+        data_handler.post_question(logged_user, title, message, image)
         question_data = data_handler.get_latest_question()
         print(question_data)
         return redirect(url_for(
             'question',
             question_id=question_data['id']))
 
-    return render_template('add_question.html')
+    return render_template('add_question.html', userid=logged_user)
 
 
 @app.route('/question/<question_id>/edit', methods=['GET'])
