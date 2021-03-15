@@ -12,14 +12,13 @@ UPLOAD_FOLDER = './static/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
 @app.route("/", methods=['GET', 'POST'])
 @app.route('/index')
 def index():
 
-    logged_user = data_handler.verify_session(session['session_id'])
+    logged_user, username = data_handler.verify_session(session['session_id'])
 
-    return render_template('index.html')
+    return render_template('index.html', userid=logged_user, username=username)
 
 
 @app.route("/registration", methods=['GET'])
@@ -59,7 +58,10 @@ def login_post():
 @app.route('/new-answer', methods=['GET', 'POST'])
 def add_question():
 
-    logged_user = data_handler.verify_session(session['session_id'])
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
+    if not logged_user:
+        return redirect(url_for('login_get'))
 
     if request.method == 'POST':
         title = request.form['title']
@@ -85,20 +87,28 @@ def add_question():
             'question',
             question_id=question_data['id']))
 
-    return render_template('add_question.html', userid=logged_user)
+    return render_template('add_question.html', userid=logged_user, username=username)
 
 
 @app.route('/question/<question_id>/edit', methods=['GET'])
 def display_edit_question(question_id):
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
+    if not logged_user:
+        return redirect(url_for('login_get'))
+
     question_data = data_handler.get_question_by_id(question_id)
     return render_template('edit_question.html',
                            question_id=question_id,
                            title=question_data['title'],
-                           message=question_data['message'])
+                           message=question_data['message'],
+                           userid=logged_user,
+                           username=username)
 
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
+
     question_data = data_handler.get_question_by_id(question_id)
 
     image = ''
@@ -125,6 +135,14 @@ def edit_question(question_id):
 def delete_question(question_id):
     # TODO delete tags for question ID
 
+    logged_user, username = data_handler.verify_session(session['session_id'])
+    if not logged_user:
+        return redirect(url_for('login_get'))
+
+    if data_handler.get_question_by_id(id=question_id)['author'] != logged_user:
+        flash('You are not the owner')
+        return redirect(url_for('index'))
+
     answers = data_handler.get_answers_for_question(question_id)
 
     for answer_to_delete in answers:
@@ -147,14 +165,17 @@ def delete_question(question_id):
 
 @app.route('/questions', methods=['GET', 'POST'])
 def questions():
+    logged_user, username = data_handler.verify_session(session['session_id'])
     questions_list = data_handler.get_all_questions()
 
     return render_template('questions.html',
-                           questions_list=questions_list)
+                           questions_list=questions_list, userid=logged_user, username=username)
 
 
 @app.route('/question/<question_id>')
 def question(question_id):
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
     if question_id == '':
         return redirect('questions')
 
@@ -172,11 +193,13 @@ def question(question_id):
                            question_data=question_data,
                            answers=answers,
                            comments_for_question=comments,
-                           comment_for_answers=comment_for_answers)
+                           comment_for_answers=comment_for_answers,
+                           userid=logged_user, username=username)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
+    logged_user, username = data_handler.verify_session(session['session_id'])
     if request.method == 'POST':
 
         message = request.form['message']
@@ -194,13 +217,13 @@ def add_answer(question_id):
 
                 image = path
 
-        data_handler.post_answer(question_id, message, image)
+        data_handler.post_answer(logged_user, question_id, message, image)
 
         return redirect(url_for('question', question_id=question_id))
 
     question_data = data_handler.get_question_by_id(id=question_id)
 
-    return render_template('add_answer.html', question_dictionary=question_data)
+    return render_template('add_answer.html', question_dictionary=question_data, userid=logged_user, username=username)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])

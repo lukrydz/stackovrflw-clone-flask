@@ -91,7 +91,7 @@ def post_question(logged_user, title, message, image=''):
     write_question(data=data)
 
 
-def post_answer(question_id, message, image=''):
+def post_answer(loggeduser, question_id, message, image=''):
     submission_time = str(util.get_timestamp())
     vote_number = '0'
     question_id = str(question_id)
@@ -102,7 +102,8 @@ def post_answer(question_id, message, image=''):
             'vote_number': vote_number,
             'question_id': question_id,
             'message': message,
-            'image': image}
+            'image': image,
+            'author': loggeduser}
 
     write_answer(data=data)
 
@@ -143,8 +144,9 @@ def write_answer(cursor, data: dict) -> bool:
                 vote_number,
                 question_id,
                 message,
-                image)
-                VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s)
+                image,
+                author)
+                VALUES (%(submission_time)s, %(vote_number)s, %(question_id)s, %(message)s, %(image)s, %(author)s)
                            """
 
     cursor.execute(query, data)
@@ -346,7 +348,8 @@ def verify_session(token):
     @connection.connection_handler
     def lookup_session(cursor, session_id):
         query = """
-                SELECT user_id, expiration_date FROM sessions
+                SELECT user_id, username, expiration_date FROM sessions
+                INNER JOIN users ON sessions.user_id = users.id
                 WHERE session_id = %(session_id)s
         """
         cursor.execute(query, {'session_id': session_id})
@@ -367,7 +370,7 @@ def verify_session(token):
             purge_session(session_id=token)
             return False
 
-        return session_data['user_id']
+        return session_data['user_id'], session_data['username']
 
     else:
         return False
