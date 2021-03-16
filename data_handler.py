@@ -229,29 +229,31 @@ def fetch_comments(cursor, id, mode):
 
 
 @connection.connection_handler
-def post_comment(cursor, message, mode, id_question="null2", id_answer="null2"):
+def post_comment(cursor, loggeduser, message, mode, id_question="null2", id_answer="null2"):
     submission_time = util.get_timestamp()
     if mode == 'question':
         query_for_question = """
-            INSERT INTO comment (question_id, message, submission_time)
-            VALUES (%(question_id)s, %(message)s, %(submission_time)s)          
+            INSERT INTO comment (question_id, message, submission_time, author)
+            VALUES (%(question_id)s, %(message)s, %(submission_time)s, %(author)s)          
     """
         cursor.execute(
             query_for_question,
             {'question_id': id_question,
              'message': message,
-             'submission_time': submission_time})
+             'submission_time': submission_time,
+             'author': loggeduser})
     else:
         query_for_answer = """
-                INSERT INTO comment (question_id, answer_id, message, submission_time)
-                VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)          
+                INSERT INTO comment (question_id, answer_id, message, submission_time, author)
+                VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s, %(author)s)          
         """
         cursor.execute(
             query_for_answer,
             {'question_id': id_question,
              'answer_id': id_answer,
              'message': message,
-             'submission_time': submission_time})
+             'submission_time': submission_time,
+             'author': loggeduser})
 
     return True
 
@@ -276,6 +278,36 @@ def get_comment_by_id(cursor, comment_id):
     cursor.execute(query, {'comment_id': comment_id})
 
     return cursor.fetchone()
+
+@connection.connection_handler
+def get_comments_by_author(cursor, user_id):
+    query = """
+            SELECT * FROM comment
+            WHERE author=%(user_id)s
+    """
+    cursor.execute(query, {'user_id': user_id})
+
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_questions_by_author(cursor, user_id):
+    query = """
+            SELECT * FROM question
+            WHERE author=%(user_id)s
+    """
+    cursor.execute(query, {'user_id': user_id})
+
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_answers_by_author(cursor, user_id):
+    query = """
+            SELECT * FROM answer
+            WHERE author=%(user_id)s
+    """
+    cursor.execute(query, {'user_id': user_id})
+
+    return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -374,3 +406,17 @@ def verify_session(token):
 
     else:
         return False
+
+@connection.connection_handler
+def get_user_data_by_id(cursor, user_id):
+    # User id
+    # User name (link to user page if implemented)
+    # Registration date
+
+    query = """
+                SELECT id, username, registration_date, reputation FROM users
+                WHERE id = %(user_id)s
+        """
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchone()
+

@@ -200,6 +200,10 @@ def question(question_id):
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
     logged_user, username = data_handler.verify_session(session['session_id'])
+
+    if not logged_user:
+        return redirect(url_for('login_get'))
+
     if request.method == 'POST':
 
         message = request.form['message']
@@ -231,6 +235,10 @@ def edit_answer(answer_id):
     """
     TODO: delete image when uploading new one.
     """
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
+    if not logged_user:
+        return redirect(url_for('login_get'))
 
     answer_data = data_handler.get_answer_by_id(answer_id)
     question_data = data_handler.get_question_by_id(id=answer_data['question_id'])
@@ -261,12 +269,25 @@ def edit_answer(answer_id):
     # else show form with answer data
     return render_template('edit_answer.html',
                            answer_data=answer_data,
-                           question_dictionary=question_data)
+                           question_dictionary=question_data,
+                           userid=logged_user, username=username)
 
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
+    """TODO: delete belonging comments for answer"""
+
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
+    if not logged_user:
+        return redirect(url_for('login_get'))
+
+
     referrer_question = data_handler.get_answer_by_id(answer_id)['question_id']
+
+    if data_handler.get_answer_by_id(answer_id)['author'] != logged_user:
+        flash('You are not an owner!')
+        return redirect(url_for('question', question_id=referrer_question))
 
     data_handler.delete_answer(answer_id)
 
@@ -287,13 +308,15 @@ def vote(answer_id, vote_up_or_down):
 
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def comment_question(question_id):
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
     question_data = data_handler.get_question_by_id(question_id)
 
     if request.method == 'POST':
 
         message = request.form['message']
 
-        data_handler.post_comment(message, 'question', question_id)
+        data_handler.post_comment(logged_user, message, 'question', question_id)
 
         return redirect(url_for('question', question_id=question_id))
 
@@ -302,8 +325,10 @@ def comment_question(question_id):
         return render_template('add_comment.html', question_data=question_data)
 
 
-@app.route('/answer/<question_id><answer_id>/new-comment', methods=['GET', 'POST'])
+@app.route('/answer/<question_id>/<answer_id>/new-comment', methods=['GET', 'POST'])
 def comment_answer(question_id, answer_id):
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
     answer_data = data_handler.get_answer_by_id(answer_id)
     referrer_question = answer_data['question_id']
 
@@ -311,7 +336,7 @@ def comment_answer(question_id, answer_id):
 
         message = request.form['message']
 
-        data_handler.post_comment(message, 'answer', question_id, answer_id)
+        data_handler.post_comment(logged_user, message, 'answer', question_id, answer_id)
 
         return redirect(url_for('question', question_id=referrer_question))
 
@@ -341,6 +366,28 @@ def delete_comment(comment_id):
     data_handler.delete_comment(comment_id=comment_id)
 
     return redirect(request.referrer)
+
+
+@app.route('/user/<user_id>', methods=['GET'])
+def userpage(user_id):
+    logged_user, username = data_handler.verify_session(session['session_id'])
+
+    # User id, User name (link to user page if implemented), Registration date
+
+    user_data = data_handler.get_user_data_by_id(user_id=user_id)
+
+    user_questions = data_handler.get_questions_by_author(user_id)
+    user_answers = data_handler.get_answers_by_author(user_id)
+    user_comments = data_handler.get_comments_by_author(user_id)
+
+    # Count of asked questions (if binding implemented)
+    # Count of answers (if binding implemented)
+    # Count of comments (if binding implemented)
+    # Reputation (if implemented)
+
+    return render_template('userpage.html', userid=logged_user, username=username, user_data=user_data,
+                           user_questions=user_questions, user_answers=user_answers, user_comments=user_comments)
+
 
 
 if __name__ == "__main__":

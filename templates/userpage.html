@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block body %}
+    <p>{{ user_data }}</p>
+    <p>Questions: {{ user_questions|count }}, Answers: {{ user_answers|count }}, Comments: {{ user_comments|count }}</p>
+    <p>{{ user_questions }}</p>
+    <p>{{ user_answers }}</p>
+    <p>{{ user_comments }}</p>
+
+    <br><br>
+
+{% endblock %}

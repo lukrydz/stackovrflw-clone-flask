@@ -13,7 +13,7 @@ header {
     font-family: Lucida, sans-serif;
     font-size: 130%;
     text-align: left;
-    color: #95e1d3;
+    color: #ffcf10;
     text-shadow: 3px 3px #000000;
     -webkit-text-stroke: 1px #ff75a0;
 }
@@ -23,7 +23,7 @@ header {
 }
 
 body {
-    background-color: #eaffd0;
+    background-color: #FFCF10;
     margin-left: 20%;
     margin-right: 20%;
 }

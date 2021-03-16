@@ -7,16 +7,16 @@
 </head>
 <body>
 <header>
-    <div class="index">
-        <div><h2><a href="{{ url_for('index') }}" id="homepage">home page</a></h2></div>
-        {% if username %}
-            Logged in as: {{ username }}
-        {% endif %}
-        <div><img src="{{ url_for("static", filename="sample.png") }}" alt="Granny" height="150px" id="homepage_picture"></div>
+        <div class="index"><h2><a href="{{ url_for('index') }}" id="homepage">home page</a></h2></div>
+            {% if username %}
+            Logged in as: <a href="{{ url_for('userpage', user_id=userid) }}">{{ username }}</a>
+        {% endif %}</div>
+        <div class="row">
+        <div class="col-md-12"> <img src="{{ url_for("static", filename="askmate_logo.png") }}" alt="AskMate3" height="200px" id="homepage_picture"></div>
+            </div>
         <div onclick="location.href='{{ url_for('questions') }}'" class="home_page_links">
             list of questions
         </div>
-    </div>
 
 </header>
 {% block body %}
@@ -33,7 +33,7 @@
 {% endblock body %}
 <footer>
     <p>
-        footer
+        2021
     </p>
 </footer>
 </body>
