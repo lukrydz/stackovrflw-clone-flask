@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 {% block body %}
 
-    <div class="box question">
+    <div class="question details">
         <div class="box_title">
-            <h3>{{ question_data['title'] }}</h3>
+            <div class="question_title">
+                <h3>{{ question_data['title'] }}</h3>
+            </div>
+            <div class="submission_time">
+                {{ question_data['submission_time'] }}
+            </div>
         </div>
-        <div>
-            {{ question_data['submission_time'] }}
-        </div>
+
         <div class="box_message">
             {{ question_data['message'] }}
             {{ question_data['image'] }}
@@ -41,6 +44,9 @@
             <div>{{ question_data['vote_number'] }}</div>
         </div>
     </div>
+    </div>
+
+
 
     <span><a href="{{ url_for('comment_question', question_id=question_data['id']) }}">
         <button>add comment</button>

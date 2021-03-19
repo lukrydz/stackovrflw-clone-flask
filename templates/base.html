@@ -3,34 +3,54 @@
 <head>
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ASKMATE 3</title>
 </head>
 <body>
-<header>
-        <div class="index"><h2><a href="{{ url_for('index') }}" id="homepage">home page</a></h2></div>
-            {% if username %}
-            Logged in as: <a href="{{ url_for('userpage', user_id=userid) }}">{{ username }}</a>
-        {% endif %}</div>
-        <div class="row">
-        <div class="col-md-12"> <img src="{{ url_for("static", filename="askmate_logo.png") }}" alt="AskMate3" height="200px" id="homepage_picture"></div>
-            </div>
-        <div onclick="location.href='{{ url_for('questions') }}'" class="home_page_links">
-            list of questions
-        </div>
+<nav>
+    <div class="navbar">
 
-</header>
+        <a href="{{ url_for('index') }}"><img src="{{ url_for("static", filename="askmate_logo.png") }}" alt="go to homepage" id="logo"></a></div>
+        <button onclick="location.href='{{ url_for('questions') }}'" class="home_page_links"> List of questions </button>
+
+            {% if username %}
+                        <a href="{{ url_for('add_question') }}">
+                <button>Add question</button>
+            </a>
+
+                <a href="{{ url_for('users') }}">
+                <button>Users list</button>
+            </a>
+
+                Logged in as: <a href="{{ url_for('userpage', user_id=userid) }}">{{ username }}</a>
+            {% else %}
+
+            <button onclick="location.href='{{ url_for('register') }}'" class="home_page_links">
+            REGISTER
+            </button>
+
+            <button onclick="location.href='{{ url_for('login_get') }}'" class="home_page_links">
+            LOGIN
+            </button>
+
+            {% endif %}
+
+
+
+
+
+    </div>
+</nav>
+
+
+
+<div class="body">
+
 {% block body %}
 
+{% endblock %}
 
-    {% block vote %}
-        <form method="POST">
-            <input type="submit" name="vote" value="vote_up">
-            <br>
-            <input type="submit" name="vote" value="vote_down">
-        </form>
-    {% endblock %}
+</div>
 
-{% endblock body %}
 <footer>
     <p>
         2021

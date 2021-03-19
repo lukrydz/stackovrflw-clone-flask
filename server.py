@@ -16,7 +16,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/index')
 def index():
 
-    logged_user, username = data_handler.verify_session(session['session_id'])
+    try:
+        logged_user, username = data_handler.verify_session(session['session_id'])
+    except:
+        logged_user, username = None, None
 
     return render_template('index.html', userid=logged_user, username=username)
 
@@ -388,6 +391,10 @@ def userpage(user_id):
     return render_template('userpage.html', userid=logged_user, username=username, user_data=user_data,
                            user_questions=user_questions, user_answers=user_answers, user_comments=user_comments)
 
+@app.route('/users')
+def users():
+
+    return ""
 
 
 if __name__ == "__main__":

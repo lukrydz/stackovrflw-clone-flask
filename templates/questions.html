@@ -3,15 +3,14 @@
     <div>
 
         {% for question in questions_list %}
-            <p class="questions">
+            <div class="question">
+            <p>
                 <a href="/question/{{ question['id'] }}" class="questions">
                     {{ question['title'] }}
                 </a>
             </p>
+            </div>
         {% endfor %}
 
-        <span><a href="{{ url_for('add_question') }}">
-                <button>Add question</button>
-            </a></span>
     </div>
 {% endblock %}
