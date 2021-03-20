@@ -5,6 +5,7 @@
         {% for question in questions_list %}
             <div class="question">
             <p>
+                {{ question.submission_time.strftime("%m.%d.%Y, %H:%M:%S") }} by {{ question.author }} -
                 <a href="/question/{{ question['id'] }}" class="questions">
                     {{ question['title'] }}
                 </a>

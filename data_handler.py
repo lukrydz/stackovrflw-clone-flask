@@ -21,6 +21,7 @@ def get_headers():
 def get_all_questions(cursor):
     cursor.execute("""
                         SELECT * FROM question
+                        ORDER BY submission_time DESC 
                        """)
     return cursor.fetchall()
 
@@ -57,6 +58,7 @@ def get_answers_for_question(cursor, question_id):
     cursor.execute("""
                         SELECT * FROM answer
                         WHERE question_id=%(id)s
+                        ORDER BY submission_time DESC
                        """, {'id': question_id})
     return cursor.fetchall()
 
@@ -240,11 +242,13 @@ def fetch_comments(cursor, id, mode):
         query = """
             SELECT * FROM comment
             WHERE question_id=%(id)s
+            ORDER BY submission_time ASC
         """
     else:
         query = """
                     SELECT * FROM comment
                     WHERE answer_id=%(id)s
+                    ORDER BY submission_time ASC
                 """
 
     cursor.execute(query, {'id': id})
