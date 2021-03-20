@@ -60,5 +60,36 @@ a.questions {
 }
 
 .options_bar {
-    justify-content: right;
+    align-content: flex-end;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.comments_for_question {
+    display: flex;
+    width: calc(60vw - 10vw);
+    align-self: flex-end;
+    margin-right: 1em;
+    justify-content: flex-end;
+    align-items: baseline;
+    background-color: #b8b8b8;
+}
+
+.comment_options {
+    margin-right: 10px;
+}
+
+.votes {
+    display: flex;
+    justify-content: center;
+}
+
+#add_comment {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
 }
