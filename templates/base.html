@@ -8,18 +8,16 @@
 <body>
 <nav>
     <div class="navbar">
+        <div id="logo">
+            <a href="{{ url_for('index') }}"><img src="{{ url_for("static", filename="askmate_logo.png") }}" alt="go to homepage" id="logo"></a></div>
 
-        <a href="{{ url_for('index') }}"><img src="{{ url_for("static", filename="askmate_logo.png") }}" alt="go to homepage" id="logo"></a></div>
-        <button onclick="location.href='{{ url_for('questions') }}'" class="home_page_links"> List of questions </button>
+        <div id="menu_buttons">
+            <button onclick="location.href='{{ url_for('questions') }}'" class="home_page_links"> List of questions </button>
 
             {% if username %}
-                        <a href="{{ url_for('add_question') }}">
-                <button>Add question</button>
-            </a>
-
-                <a href="{{ url_for('users') }}">
-                <button>Users list</button>
-            </a>
+                <button onclick="location.href='{{ url_for('add_question') }}'">Add question</button>
+                <button onclick="location.href='{{ url_for('users') }}'">Users list</button>
+                <button onclick="location.href=''">Tags list</button>
 
                 Logged in as: <a href="{{ url_for('userpage', user_id=userid) }}">{{ username }}</a>
             {% else %}
@@ -33,7 +31,7 @@
             </button>
 
             {% endif %}
-
+    </div>
 
 
 
@@ -43,7 +41,7 @@
 
 
 
-<div class="body">
+<div class="container">
 
 {% block body %}
 

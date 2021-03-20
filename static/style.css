@@ -1,5 +1,7 @@
 body {
-    width: 700px;
+    display: flex;
+    flex-direction: column;
+    width: 60vw;
     margin-left: auto;
     margin-right: auto;
     background: #e0e4cc;
@@ -7,7 +9,6 @@ body {
 
 div {
     border: 2px solid black;
-    display: block;
 }
 
 button {
@@ -18,13 +19,15 @@ div.body {
     clear: both;
 }
 
-#logo {
-    float: left;
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
-.navbar {
-    display: inline-block;
-    alignment: right;
+#menu_buttons {
+    justify-content: end;
+    align-self: flex-end;
 }
 
 .question {
@@ -42,14 +45,20 @@ a.questions {
 }
 
 .box_title {
-    display: inline;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
 }
 
-.question_title {
-    display: inherit;
-    float: left;
+.box_message {
+    padding: 1em;
 }
 
-.submission_time {
-    text-align: right;
+.question_image > img {
+    width: 100px;
+}
+
+.options_bar {
+    justify-content: right;
 }

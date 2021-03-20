@@ -7,43 +7,31 @@
                 <h3>{{ question_data['title'] }}</h3>
             </div>
             <div class="submission_time">
-                {{ question_data['submission_time'] }}
+                {{ question_data['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}
             </div>
         </div>
 
         <div class="box_message">
-            {{ question_data['message'] }}
-            {{ question_data['image'] }}
-        </div>
-        {#        <div class="question_image">#}
-        {#            <img alt="" src="{{ url_for('static', filename=question_data['image']) }}"/>#}
-        {##}
-        {#        </div>#}
-        <div class="box_edit_delete">
-            <div class="edit">
+            <div class="question_image">
+                {% if question_data['image'] %}
+                <img alt="" src="{{ url_for('static', filename=question_data['image']) }}" />
+                {% endif %}
 
-                <a href="{{ url_for('display_edit_question', question_id=question_data['id']) }}">
-                    <button>Edit Question</button>
-                </a>
-
-
+                {{ question_data['message'] }}
             </div>
+        </div>
 
+        <div class="options_bar">
+            {{ question_data['vote_number'] }}
+            <button onclick="document.href='{{ url_for('index') }}'">VOTE +</button>
+            <button onclick="document.href='{{ url_for('index') }}'">VOTE -</button>
+                <button onclick="document.href='{{ url_for('display_edit_question', question_id=question_data['id']) }}'">Edit Question</button>
 
-            <div class="delete">
-                <a href="{{ url_for("delete_question", question_id=question_data['id']) }}"
+                <BUTTON><a href="{{ url_for("delete_question", question_id=question_data['id']) }}"
                    onclick="return confirm('Are you sure?')">
-                    <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
-                </a>
-            </div>
+                <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/></a></BUTTON>
+
         </div>
-        <div class="box_vote">
-            <div>vote up</div>
-            <div>vote down</div>
-            <div></div>
-            <div>{{ question_data['vote_number'] }}</div>
-        </div>
-    </div>
     </div>
 
 
@@ -62,7 +50,7 @@
 
             </div>
             <div>
-                {{ comment['submission_time'] }}
+                {{ comment['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}
             </div>
             <div class="box_message">
                 {{ comment['message'] }}
@@ -111,7 +99,7 @@
                 {# blank #}
             </div>
             <div>
-                {{ answer['submission_time'] }}
+                {{ answer['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}
             </div>
             <div class="box_message">
                 {{ answer['message'] }}
@@ -153,7 +141,7 @@
         {% for comment in comment_for_answers[answer['id']] %}
             <div class="box comment_for_answer">
                 <div class="box_title"></div>
-                <div>{{ comment['submission_time'] }}</div>
+                <div>{{ comment['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}</div>
                 <div class="box_message">
                     {{ comment['message'] }}
 

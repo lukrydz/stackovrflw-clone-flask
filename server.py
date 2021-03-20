@@ -81,7 +81,7 @@ def add_question():
                 path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(path)
 
-                image = path
+                image = filename
 
         data_handler.post_question(logged_user, title, message, image)
         question_data = data_handler.get_latest_question()
