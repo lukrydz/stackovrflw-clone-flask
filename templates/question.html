@@ -23,9 +23,9 @@
 
         <div class="options_bar">
             {{ question_data['vote_number'] }}
-            <button onclick="document.href='{{ url_for('index') }}'">VOTE +</button>
-            <button onclick="document.href='{{ url_for('index') }}'">VOTE -</button>
-            <button onclick="document.href='{{ url_for('display_edit_question', question_id=question_data['id']) }}'">Edit Question</button>
+            <button onclick="location.href='{{ url_for('vote_for_question', question_id=question_data['id'], vote_up_or_down='vote_up') }}'">VOTE +</button>
+            <button onclick="location.href='{{ url_for('vote_for_question', question_id=question_data['id'], vote_up_or_down='vote_down') }}'">VOTE -</button>
+            <button onclick="location.href='{{ url_for('display_edit_question', question_id=question_data['id']) }}'">Edit Question</button>
 
                 <BUTTON><a href="{{ url_for("delete_question", question_id=question_data['id']) }}" onclick="return confirm('Are you sure?')">
                 <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/></a></BUTTON>
@@ -37,12 +37,6 @@
     {% for comment in comments_for_question %}
 
     <div class="comments_for_question">
-    <div class="comment_options">
-        <button>vote up</button>
-                <button>vote down</button>
-
-                <div class="votes">0</div>
-    </div>
             <div>
                 {{ comment['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }} by <a href="{{ url_for('userpage', user_id=comment.author) }}">#{{ comment.author }}</a>
             </div>
@@ -53,9 +47,7 @@
             {% if userid == comment['author'] %}
                 <div class="edit">
 
-                    <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
-                        <button>EDIT COMMENT</button>
-                    </a>
+                        <button onclick="location.href='{{ url_for('edit_comment', comment_id=comment['id']) }}'">EDIT COMMENT</button>
                 </div>
                 <div class="delete">
                     <a href="{{ url_for('delete_comment', comment_id=comment['id']) }}"
@@ -74,14 +66,14 @@
 
         </div>
     <div class="add_comment">
-        <button onclick="document.href='{{ url_for('comment_question', question_id=question_data['id']) }}'">add comment</button>
+        <button onclick="location.href='{{ url_for('comment_question', question_id=question_data['id']) }}'">add comment</button>
     </div>
 
 
     <h2>Answers:</h2>
 
     <div class="add_comment">
-        <button document.href='{{ url_for('add_answer', question_id=question_data['id']) }}'>add answer</button>
+        <button onclick="location.href='{{ url_for('add_answer', question_id=question_data['id']) }}'">add answer</button>
     </div>
 
     {% for answer in answers %}
@@ -102,7 +94,7 @@
 
             <div class="box_edit_delete">
 
-                <button onclick="document.href='{{ url_for('edit_answer', answer_id=answer['id']) }}'">Edit answer</button>
+                <button onclick="location.href='{{ url_for('edit_answer', answer_id=answer['id']) }}'">Edit answer</button>
                 <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">
                     <button onclick="return confirm('Are you sure?')" style="margin-right: 10px">delete</button>
                 </a>
@@ -124,12 +116,7 @@
     {% for comment in comment_for_answers[answer['id']] %}
 
             <div class="comments_for_question">
-                <div class="comment_options">
-                        <button>vote up</button>
-                         <button>vote down</button>
 
-                <div class="votes">0</div>
-    </div>
             <div>
                 {{ comment['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }} by <a href="{{ url_for('userpage', user_id=comment.author) }}">#{{ comment.author }}</a>
             </div>
@@ -159,8 +146,7 @@
     {% endfor %}
 
     <div class="add_comment">
-    <a href="">
-                <button onclick="document.href='{{ url_for('comment_answer', question_id=question_data['id'], answer_id=answer['id']) }}'">add comment</button>
+                <button onclick="location.href='{{ url_for('comment_answer', question_id=question_data['id'], answer_id=answer['id']) }}'">add comment</button>
     </div>
     {% endfor %}
 

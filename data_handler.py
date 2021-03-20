@@ -186,6 +186,29 @@ def vote_answer(cursor, answer_id, value):
 
     return True
 
+@connection.connection_handler
+def vote_question(cursor, question_id, value):
+    query = """
+            UPDATE question
+            SET vote_number = vote_number + %(vote)s
+            WHERE id = %(question_id)s
+                       """
+    cursor.execute(query, {'vote': value, 'question_id': question_id})
+
+    return True
+
+
+# @connection.connection_handler
+# def vote_comment(cursor, comment_id, value):
+#     query = """
+#             UPDATE comment
+#             SET vote_number = vote_number + %(vote)s
+#             WHERE id = %(comment_id)s
+#                        """
+#     cursor.execute(query, {'vote': value, 'comment_id': comment_id})
+#
+#     return True
+
 
 @connection.connection_handler
 def delete_question(cursor, id: int):

@@ -309,6 +309,16 @@ def vote(answer_id, vote_up_or_down):
     return redirect(url_for('question', question_id=referrer_question))
 
 
+@app.route('/question/<question_id>/<vote_up_or_down>', methods=['GET'])
+def vote_for_question(question_id, vote_up_or_down):
+    referrer_question = question_id
+
+    value = 1 if vote_up_or_down == 'vote_up' else -1
+
+    data_handler.vote_question(question_id=question_id, value=value)
+    return redirect(url_for('question', question_id=referrer_question))
+
+
 @app.route('/question/<question_id>/new-comment', methods=['GET', 'POST'])
 def comment_question(question_id):
     logged_user, username = data_handler.verify_session(session['session_id'])
