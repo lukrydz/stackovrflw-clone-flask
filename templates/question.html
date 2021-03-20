@@ -73,94 +73,95 @@
     {% endfor %}
 
         </div>
-    <div id="add_comment">
+    <div class="add_comment">
         <button onclick="document.href='{{ url_for('comment_question', question_id=question_data['id']) }}'">add comment</button>
     </div>
-    <span><a href="{{ url_for('add_answer', question_id=question_data['id']) }}">
-        <button>add answer</button>
-    </a></span>
 
 
-    <h3>Answers:</h3>
+    <h2>Answers:</h2>
 
+    <div class="add_comment">
+        <button document.href='{{ url_for('add_answer', question_id=question_data['id']) }}'>add answer</button>
+    </div>
 
     {% for answer in answers %}
-        <div class="box answer">
+
+        <div class="question details">
             <div class="box_title">
-                {# blank #}
+
+                <div>
+                    {{ answer['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}
+                </div>
+
+
+                <div class="box_message">
+                    {{ answer['message'] }}
+                </div>
+
             </div>
-            <div>
-                {{ answer['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}
-            </div>
-            <div class="box_message">
-                {{ answer['message'] }}
-            </div>
+
             <div class="box_edit_delete">
-                <div class="edit">
-                    <a href="{{ url_for('edit_answer', answer_id=answer['id']) }}">
-                        <button>Edit answer</button>
-                    </a>
-                </div>
-                <div class="delete">
-                    <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">
-                        <button onclick="return confirm('Are you sure?')">delete</button>
-                    </a>
-                </div>
-            </div>
-            <div class="box_vote">
-                <div>
+
+                <button onclick="document.href='{{ url_for('edit_answer', answer_id=answer['id']) }}'">Edit answer</button>
+                <a href="{{ url_for('delete_answer', answer_id=answer['id']) }}">
+                    <button onclick="return confirm('Are you sure?')" style="margin-right: 10px">delete</button>
+                </a>
+
+
+                {{ answer['vote_number'] }}
                     <a href="{{ url_for('vote', answer_id=answer['id'], vote_up_or_down='vote_up') }}">
-                        <button>vote up</button>
+                        <button style="margin-left: 10px">vote up</button>
                     </a>
-                </div>
-                <div>
+
                     <a href="{{ url_for('vote', answer_id=answer['id'], vote_up_or_down='vote_down') }}">
                         <button>vote down</button>
                     </a>
-                </div>
-                <div></div>
-                <div> {{ answer['vote_number'] }}</div>
             </div>
         </div>
 
-        <span><a href="{{ url_for('comment_answer', question_id=question_data['id'], answer_id=answer['id']) }}">
-                <button>add comment</button>
-            </a></span>
 
-        {% for comment in comment_for_answers[answer['id']] %}
-            <div class="box comment_for_answer">
-                <div class="box_title"></div>
-                <div>{{ comment['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }}</div>
-                <div class="box_message">
-                    {{ comment['message'] }}
 
-                </div>
-                <div class="box_edit_delete">
-                    <div class="edit">
+    {% for comment in comment_for_answers[answer['id']] %}
 
-                        <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
-                            <button>Edit comment</button>
-                        </a>
-                    </div>
-                    <div class="delete">
-                        <a href="{{ url_for('delete_comment', comment_id=comment['id']) }}"
-                           onclick="return confirm('Are you sure?')">
-                            <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
-                        </a>
-                    </div>
-                </div>
-                <div class="box_vote">
-                    <div>
+            <div class="comments_for_question">
+                <div class="comment_options">
                         <button>vote up</button>
-                    </div>
-                    <div>
-                        <button>vote down</button>
-                    </div>
-                    <div></div>
-                    <div>vote number</div>
-                </div>
+                         <button>vote down</button>
+
+                <div class="votes">0</div>
+    </div>
+            <div>
+                {{ comment['submission_time'].strftime("%m.%d.%Y, %H:%M:%S") }} by <a href="{{ url_for('userpage', user_id=comment.author) }}">#{{ comment.author }}</a>
             </div>
-        {% endfor %}
+            <div class="box_message">
+                {{ comment['message'] }}
+            </div>
+            <div class="box_options">
+            {% if userid == comment['author'] %}
+                <div class="edit">
+
+                    <a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">
+                        <button>EDIT COMMENT</button>
+                    </a>
+                </div>
+                <div class="delete">
+                    <a href="{{ url_for('delete_comment', comment_id=comment['id']) }}"
+                       onclick="return confirm('Are you sure?')">
+                        <img alt="" src="{{ url_for('static', filename="trash-solid.svg") }}" style="width: 15px"/>
+                    </a>
+                {% endif %}
+                </div>
+
+            </div>
+
+    </div>
+
+    {% endfor %}
+
+    <div class="add_comment">
+    <a href="">
+                <button onclick="document.href='{{ url_for('comment_answer', question_id=question_data['id'], answer_id=answer['id']) }}'">add comment</button>
+    </div>
     {% endfor %}
 
 {% endblock %}

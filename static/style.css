@@ -8,7 +8,7 @@ body {
 }
 
 div {
-    border: 2px solid black;
+    border: 0px solid black;
 }
 
 button {
@@ -88,8 +88,13 @@ a.questions {
     justify-content: center;
 }
 
-#add_comment {
+.add_comment {
     display: flex;
     flex-direction: column;
     align-self: flex-end;
+}
+
+.box_edit_delete {
+    display: flex;
+    justify-content: flex-end;
 }
